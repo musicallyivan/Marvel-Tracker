@@ -1,0 +1,404 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+    <title>MARVEL · Tracker MCU | Universo Cinematográfico en Orden Cronológico</title>
+    <meta name="description" content="El tracker definitivo para seguir todas las películas y series del Universo Cinematográfico de Marvel (MCU) en orden cronológico, calcular tu maratón y comparar con amigos." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="modern.css" />
+    <link rel="stylesheet" href="overrides.css" />
+  </head>
+  <body>
+    <!-- Cinema Dark Overlay Mode -->
+    <div id="cinema-overlay" class="cinema-overlay"></div>
+
+    <main>
+      <!-- Topbar Header -->
+      <header class="topbar">
+        <a class="brand" href="#inicio" aria-label="Marvel Tracker, inicio"><span>MARVEL</span><b>TRACKER</b></a>
+        <nav>
+          <a href="#cronologia">Cronología</a>
+          <a href="#rutas">Rutas</a>
+          <a href="#maraton">Maratón</a>
+          <a href="#logros">Logros</a>
+          <a href="#proximamente">Estrenos</a>
+        </nav>
+        
+        <div class="topbar-controls">
+          <button id="btn-toggle-sound" class="topbar-icon-btn" title="Activar/Desactivar Sonido">🔊 <span class="sound-status">ON</span></button>
+          <button id="btn-toggle-cinema" class="topbar-icon-btn" title="Modo Cine (Luces Apagadas)">🎬</button>
+          <button id="btn-open-versus" class="topbar-icon-btn glow-gold" title="Comparar con Amigos (Versus)">👥 Versus</button>
+          <a id="btn-github-repo" class="topbar-icon-btn github-btn" href="https://github.com/musicallyivan/Marvel-Tracker" target="_blank" rel="noopener noreferrer" title="Ver Repositorio en GitHub">
+            <svg class="github-icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+            <span>GitHub</span>
+          </a>
+        </div>
+
+        <!-- Header Dynamic Countdown Mini Preview -->
+        <section class="countdown-widget" id="header-countdown-widget" aria-label="Próximo estreno del MCU">
+          <div class="countdown-header-info">
+            <span class="pulse-dot"></span>
+            <span class="countdown-badge">PRÓXIMO ESTRENO</span>
+            <div id="header-countdown-title" class="countdown-title">AVENGERS: DOOMSDAY</div>
+          </div>
+          <div id="countdown-numbers" class="countdown-numbers"></div>
+        </section>
+      </header>
+
+      <!-- Hero Section -->
+      <section id="inicio" class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">MARVEL CINEMATIC UNIVERSE</p>
+          <h1>Tu universo.<br><em>En orden perfecto.</em></h1>
+          <p class="hero-text">Sigue cada película y serie del MCU en orden cronológico o por estrenos. Sincroniza tus valoraciones, calcula tu maratón y compara tu progreso con amigos.</p>
+          <div class="hero-actions">
+            <a href="#cronologia" class="primary-btn">EXPLORAR CRONOLOGÍA <span>↓</span></a>
+            <button id="btn-next-recommended" class="secondary-btn glow-gold">▶ SIGUIENTE RECOMENDADA</button>
+            <button id="btn-random-picker" class="secondary-btn">🎲 RULETA MARVEL</button>
+          </div>
+        </div>
+
+        <!-- Modern Main Dynamic Countdown Card -->
+        <div class="hero-countdown-card glass-panel">
+          <div class="countdown-card-header">
+            <span class="live-indicator"><i class="dot"></i> EN CUENTA ATRÁS</span>
+            <span id="countdown-phase-tag" class="phase-tag">FASE 6</span>
+          </div>
+          <h3 id="main-countdown-title">AVENGERS: DOOMSDAY</h3>
+          <p id="main-countdown-date" class="countdown-subtext">Estreno previsto: 18 de Diciembre de 2026</p>
+          
+          <div id="main-countdown-timer" class="big-timer-grid">
+            <div class="time-box"><span id="timer-days">000</span><small>DÍAS</small></div>
+            <div class="time-box"><span id="timer-hours">00</span><small>HORAS</small></div>
+            <div class="time-box"><span id="timer-mins">00</span><small>MIN</small></div>
+            <div class="time-box"><span id="timer-secs">00</span><small>SEG</small></div>
+          </div>
+
+          <!-- Selector to switch upcoming movies countdown -->
+          <div class="upcoming-selector-wrap">
+            <label for="countdown-movie-select">Cambiar película:</label>
+            <select id="countdown-movie-select" class="custom-select">
+              <!-- Dynamically populated -->
+            </select>
+            <button id="btn-export-calendar-ics" class="secondary-btn btn-sm-full" style="margin-top: 8px;">📅 Añadir Estrenos a Calendario (.ics)</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tracker Timeline Section -->
+      <section id="cronologia" class="tracker-section">
+        <!-- Prominent Large Modern Progress Section -->
+        <div class="progress-dashboard glass-panel">
+          <div class="dashboard-header">
+            <div>
+              <p class="eyebrow">PROGRESO DEL MARVEL UNIVERSE</p>
+              <h2 id="dashboard-percentage">0% COMPLETADO</h2>
+            </div>
+            <div class="progress-stats-badges">
+              <span id="stat-total-badge" class="stat-pill">🍿 <b>0 / 0</b> vistos</span>
+              <span id="stat-movies-badge" class="stat-pill">🎬 <b>0 / 0</b> Películas</span>
+              <span id="stat-series-badge" class="stat-pill">📺 <b>0 / 0</b> Series</span>
+              <span id="stat-hours-badge" class="stat-pill">⏱️ <b>0h</b> vistas</span>
+            </div>
+          </div>
+
+          <!-- Large Glowing Progress Bar -->
+          <div class="large-progress-container" aria-label="Progreso general de visionado">
+            <div class="large-progress-bar">
+              <div id="large-progress-fill" class="progress-fill-glow" style="width: 0%;">
+                <span id="progress-bar-glow-pin"></span>
+              </div>
+            </div>
+            <div class="progress-bar-meta">
+              <span id="progress-text-detail">0 de 0 contenido visto</span>
+              <div class="progress-quick-actions">
+                <button id="btn-mark-all" class="text-action-btn">✓ Marcar todo</button>
+                <button id="btn-reset-all" class="text-action-btn text-danger">↺ Resetear</button>
+                <button id="btn-export-json" class="text-action-btn">💾 Exportar</button>
+                <button id="btn-import-json" class="text-action-btn">📥 Importar</button>
+                <button id="btn-share-stats" class="text-action-btn text-gold pulse-glow">🖼️ GENERAR FICHA DE FAN</button>
+                <input type="file" id="import-file-input" accept=".json" style="display: none;" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Rutas Guiadas Especiales -->
+        <div id="rutas" class="guided-routes-section glass-panel">
+          <div class="section-title-wrap">
+            <p class="eyebrow">MARATONES TEMÁTICOS</p>
+            <h3>RUTAS GUIADAS DE VISIONADO</h3>
+          </div>
+          <div class="routes-buttons-wrap">
+            <button class="route-btn active" data-route="all">🌐 Todas las Entradas</button>
+            <button class="route-btn" data-route="doomsday">💀 Ruta Esencial Doomsday</button>
+            <button class="route-btn" data-route="loki">🗡️ Saga de Loki</button>
+            <button class="route-btn" data-route="spidey">🕷️ Saga de Spider-Man</button>
+            <button class="route-btn" data-route="movies-only">🎬 Solo Películas</button>
+          </div>
+        </div>
+
+        <!-- Logros / Insignias Section -->
+        <div id="logros" class="achievements-section glass-panel">
+          <div class="section-title-wrap">
+            <p class="eyebrow">INSIGNIAS & DESAFÍOS</p>
+            <h3>LOGROS DEL MULTIVERSO</h3>
+          </div>
+          <div id="achievements-grid" class="achievements-grid">
+            <!-- Dynamically rendered achievements -->
+          </div>
+        </div>
+
+        <!-- Calculadora de Maratón Section -->
+        <div id="maraton" class="marathon-calculator-card glass-panel">
+          <div class="marathon-header">
+            <div>
+              <p class="eyebrow">PLANIFICADOR DE VISIONADO</p>
+              <h3>CALCULADORA DE MARATÓN MCU</h3>
+            </div>
+            <span class="marathon-icon">🍿</span>
+          </div>
+          <div class="marathon-controls-grid">
+            <div class="input-group">
+              <label for="marathon-pace-select">Tu ritmo de visionado:</label>
+              <select id="marathon-pace-select" class="custom-select">
+                <option value="1">1 título al día (~2h/día)</option>
+                <option value="2">2 títulos al día (~4h/día)</option>
+                <option value="0.5">1 título cada 2 días</option>
+                <option value="0.285">2 títulos a la semana (fin de semana)</option>
+                <option value="0.43">3 títulos a la semana</option>
+              </select>
+            </div>
+            <div class="input-group">
+              <label for="marathon-target-select">Objetivo de estreno:</label>
+              <select id="marathon-target-select" class="custom-select">
+                <!-- Populated dynamically -->
+              </select>
+            </div>
+          </div>
+          <div id="marathon-result-box" class="marathon-result-box">
+            <!-- Dynamically calculated status -->
+          </div>
+        </div>
+
+        <!-- Controls: Filters, Sort Toggle & Search -->
+        <div class="controls-panel">
+          <div class="sort-toggle-wrap">
+            <span class="sort-label">Ordenar por:</span>
+            <div class="toggle-switch-group">
+              <button id="sort-chrono" class="sort-btn active">⚡ Orden Cronológico MCU</button>
+              <button id="sort-release" class="sort-btn">📅 Orden de Estreno</button>
+              <button id="sort-rating" class="sort-btn">⭐ Mejor Valoradas</button>
+            </div>
+          </div>
+
+          <div class="filters-row">
+            <div class="filters" role="group" aria-label="Filtrar contenido">
+              <button class="filter active" data-filter="all">Todos <span id="all-count"></span></button>
+              <button class="filter" data-filter="pending">Pendientes <span id="pending-count"></span></button>
+              <button class="filter" data-filter="watched">Vistas <span id="watched-count"></span></button>
+              <button class="filter" data-filter="favorites">Favoritas ⭐ <span id="fav-count"></span></button>
+              <button class="filter" data-filter="movie">Películas</button>
+              <button class="filter" data-filter="series">Series</button>
+              <div class="phase-divider"></div>
+              <button class="filter" data-filter="disney">✨ Disney+</button>
+              <button class="filter" data-filter="cines">🍿 Solo Cines</button>
+              <div class="phase-divider"></div>
+              <button class="filter" data-filter="saga-infinito">♾️ Saga del Infinito</button>
+              <button class="filter" data-filter="saga-multiverso">🌀 Saga Multiverso</button>
+              <button class="filter" data-filter="tag-callejero">🥊 Callejero</button>
+              <button class="filter" data-filter="tag-cosmico">🌌 Cósmico</button>
+              <button class="filter" data-filter="tag-mistico">⛩️ Místico</button>
+              <div class="phase-divider"></div>
+              <button class="filter" data-filter="Fase 1">Fase 1</button>
+              <button class="filter" data-filter="Fase 2">Fase 2</button>
+              <button class="filter" data-filter="Fase 3">Fase 3</button>
+              <button class="filter" data-filter="Fase 4">Fase 4</button>
+              <button class="filter" data-filter="Fase 5">Fase 5</button>
+              <button class="filter" data-filter="Fase 6">Fase 6</button>
+            </div>
+            
+            <label class="search">
+              <span class="search-icon">⌕</span>
+              <input id="search" type="search" placeholder="Buscar película, serie..." />
+            </label>
+          </div>
+        </div>
+
+        <!-- Timeline Grid -->
+        <div id="timeline" class="timeline"></div>
+      </section>
+
+      <!-- Up Next Featured Movie Trailer Section -->
+      <section id="proximamente" class="up-next">
+        <div class="up-next-content">
+          <p class="eyebrow">SIGUIENTE GRAN EVENTO DEL MULTIVERSO</p>
+          <h2 id="featured-movie-title">AVENGERS: DOOMSDAY</h2>
+          <p id="featured-movie-desc">Robert Downey Jr. regresa al Universo Cinematográfico de Marvel como Victor von Doom en la cumbre del multiverso.</p>
+          <button id="featured-trailer-btn" class="primary-btn pulse-glow">VER TRÁILER DE DOOMSDAY <span>▶</span></button>
+        </div>
+      </section>
+
+      <!-- Footer with Legal & Subpage Links -->
+      <footer class="app-footer">
+        <div class="footer-container">
+          <div class="footer-left">
+            <a class="brand" href="#inicio"><span>MARVEL</span><b>TRACKER</b></a>
+            <p class="footer-desc">El tracker no oficial más completo para seguir todo el Universo Cinematográfico de Marvel en orden cronológico perfecto.</p>
+          </div>
+
+          <div class="footer-links">
+            <p class="footer-title">LEGAL Y PRIVACIDAD</p>
+            <a href="privacidad.html">🔒 Política de Privacidad</a>
+            <a href="terminos.html">📜 Términos de Uso y Aviso Legal</a>
+            <a href="cookies.html">🍪 Política de Cookies</a>
+          </div>
+        </div>
+
+        <div class="footer-bottom">
+          <p>MARVEL TRACKER es un proyecto independiente desarrollado sin ánimo de lucro por y para fans. MARVEL, Marvel Cinematic Universe, The Avengers y todos los nombres y logotipos de personajes son marcas registradas de Marvel Characters, Inc. y The Walt Disney Company.</p>
+          <p class="copyright">© 2026 MARVEL TRACKER · Todos los derechos reservados a sus respectivos dueños.</p>
+        </div>
+      </footer>
+    </main>
+
+    <!-- Trailer, Review & Details Modal -->
+    <dialog id="trailer-modal" class="modal">
+      <button id="close-modal" class="close" aria-label="Cerrar ventana">×</button>
+      <div class="video-wrap">
+        <iframe id="trailer-frame" title="Tráiler del MCU" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
+      </div>
+      <div class="modal-info">
+        <div class="modal-main-info">
+          <div class="modal-tags">
+            <span id="modal-meta" class="eyebrow"></span>
+            <span id="modal-phase" class="phase-tag"></span>
+          </div>
+          <h3 id="modal-title"></h3>
+          <p id="modal-synopsis" class="modal-synopsis-text"></p>
+          
+          <!-- User Rating & Personal Notes Form -->
+          <div class="user-review-box">
+            <div class="rating-picker">
+              <span class="review-label">Tu Valoración:</span>
+              <div id="star-rating-controls" class="star-rating">
+                <span class="star" data-value="1">★</span>
+                <span class="star" data-value="2">★</span>
+                <span class="star" data-value="3">★</span>
+                <span class="star" data-value="4">★</span>
+                <span class="star" data-value="5">★</span>
+              </div>
+              <span id="rating-text-value" class="rating-text">Sin valorar</span>
+            </div>
+            <div class="notes-picker">
+              <label for="modal-user-note" class="review-label">Tu Nota Personal / Opinión:</label>
+              <textarea id="modal-user-note" placeholder="Escribe aquí lo que te pareció..." rows="2"></textarea>
+              <button id="btn-save-note" class="secondary-btn btn-sm">Guardar Reseña</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <a id="watch-link" class="watch-btn" href="#" target="_blank" rel="noreferrer">VER TRÁILER EN YOUTUBE <span>↗</span></a>
+        </div>
+      </div>
+      <p class="link-note">Pulsa el icono <b>✎</b> en cualquier tarjeta para configurar tu enlace personal de reproducción.</p>
+    </dialog>
+
+    <!-- Random Picker Modal / Roulette Dialog -->
+    <dialog id="roulette-modal" class="modal modal-sm">
+      <button id="close-roulette-modal" class="close">×</button>
+      <div class="roulette-box">
+        <p class="eyebrow">¿QUÉ VER HOY?</p>
+        <h3>SELECCIÓN ALEATORIA MARVEL</h3>
+        <div id="roulette-display" class="roulette-display">
+          <img id="roulette-poster" src="" alt="" />
+          <h4 id="roulette-title">GIRANDO LA RULETA...</h4>
+        </div>
+        <div class="roulette-actions">
+          <button id="btn-spin-again" class="secondary-btn">🎲 GIRAR DE NUEVO</button>
+          <button id="btn-open-roulette-item" class="primary-btn">VER DETALLES Y TRÁILER ▶</button>
+        </div>
+      </div>
+    </dialog>
+
+    <!-- RENDERED FAN CARD IMAGE MODAL -->
+    <dialog id="fan-card-modal" class="modal modal-lg">
+      <button id="close-fan-card-modal" class="close">×</button>
+      <div class="fan-card-modal-content">
+        <div class="fan-card-header">
+          <p class="eyebrow">TU FICHA DE FAN DEL MCU</p>
+          <h3>IMAGEN GENERADA EN TIEMPO REAL</h3>
+          <p class="sub-note">Muestra todas las películas y series con borde verde y tick para las vistas, y candado para las pendientes.</p>
+        </div>
+        <div class="canvas-preview-wrap">
+          <canvas id="fan-card-canvas"></canvas>
+        </div>
+        <div class="fan-card-actions">
+          <button id="btn-download-fan-card" class="primary-btn pulse-glow">💾 DESCARGAR IMAGEN (PNG)</button>
+          <button id="btn-copy-fan-card-text" class="secondary-btn">📋 COPIAR TEXTO FICHA</button>
+        </div>
+      </div>
+    </dialog>
+
+    <!-- VERSUS COMPARATOR MODAL -->
+    <dialog id="versus-modal" class="modal modal-lg">
+      <button id="close-versus-modal" class="close">×</button>
+      <div class="versus-modal-content">
+        <div class="versus-header">
+          <p class="eyebrow">MODO VERSUS ENTRE FANS</p>
+          <h3>COMPARA TU PROGRESO CON UN AMIGO</h3>
+          <p class="sub-note">Pega el archivo o código JSON de copia de seguridad de tu amigo para ver la comparativa al instante.</p>
+        </div>
+
+        <div class="versus-input-box">
+          <label for="versus-friend-json">Cargar datos de tu amigo (pega el JSON o selecciona archivo):</label>
+          <div class="versus-inputs-flex">
+            <textarea id="versus-friend-json" placeholder="Pega el contenido del archivo .json de tu amigo aquí..." rows="2"></textarea>
+            <button id="btn-load-versus-file" class="secondary-btn">📁 Cargar .json</button>
+            <input type="file" id="versus-file-input" accept=".json" style="display:none;" />
+          </div>
+        </div>
+
+        <div id="versus-results-container" class="versus-results-grid">
+          <!-- Dynamically generated comparison -->
+        </div>
+      </div>
+    </dialog>
+
+    <!-- Card Template -->
+    <template id="card-template">
+      <article class="title-card">
+        <div class="card-badge-wrap">
+          <span class="chrono-badge">#1</span>
+          <span class="card-phase-badge">Fase 1</span>
+        </div>
+        <button class="poster-button" aria-label="Ver tráiler">
+          <img loading="lazy" alt="" />
+          <span class="poster-fallback"></span>
+          <div class="poster-overlay">
+            <span class="play-icon">▶</span>
+            <span class="play-text">VER TRÁILER</span>
+          </div>
+        </button>
+        <div class="card-bottom">
+          <div class="card-title-group">
+            <p class="card-meta"></p>
+            <h3></h3>
+            <div class="card-user-stars">★★★★★</div>
+          </div>
+          <div class="card-actions">
+            <button class="seen-toggle" title="Marcar como visto" aria-label="Marcar como visto">✓</button>
+            <button class="edit-link" title="Añadir enlace personal">✎</button>
+          </div>
+        </div>
+      </article>
+    </template>
+
+    <script src="app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,11 @@
+/* Final layout polish & utility tweaks */
+
+.phase-divider {
+  display: inline-block;
+}
+
+@media (max-width: 720px) {
+  .phase-divider {
+    display: none;
+  }
+}
