@@ -1,0 +1,39 @@
+name: ☁️ Auto-Guardado de Perfiles de Usuario MCU
+
+on:
+  issues:
+    types: [opened, edited]
+  repository_dispatch:
+    types: [save-user-profile]
+
+jobs:
+  sync-user-profile:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+
+    steps:
+      - name: 📁 Checkout del repositorio mcu-database
+        uses: actions/checkout@v4
+
+      - name: ⚙️ Procesar y Guardar Perfil de Usuario en JSON
+        run: |
+          mkdir -p users
+          if [ "${{ github.event_name }}" == "issues" ]; then
+            UNAME=$(echo "${{ github.event.issue.title }}" | sed 's/\[USER_SYNC\] //g' | tr -cd 'a-zA-Z0-9_-')
+            BODY='${{ github.event.issue.body }}'
+          else
+            UNAME="${{ github.event.client_payload.username }}"
+            BODY='${{ toJson(github.event.client_payload.watched) }}'
+          fi
+
+          if [ -n "$UNAME" ]; then
+            echo "Procesando usuario: $UNAME"
+            echo "{\"username\": \"$UNAME\", \"watched\": $BODY, \"updatedAt\": \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"}" > "users/$UNAME.json"
+          fi
+
+      - name: 💾 Commit y Push del perfil de usuario
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "user: ☁️ Actualización automática de perfil para ${{ github.event.issue.title }}"

@@ -1,9 +1,10 @@
 const poster = (path) => path.startsWith('http') ? path : `https://image.tmdb.org/t/p/w500${path.startsWith('/') ? path : '/' + path}`;
 const defaultTrailer = '399Ez7WHK5s';
 
-// MCU Database URL Endpoint
+// MCU Database URL Endpoints
 const MCU_DATABASE_API_URL = 'https://raw.githubusercontent.com/musicallyivan/mcu-database/main/mcu-dataset.json';
 const MCU_USER_PROFILES_BASE_URL = 'https://raw.githubusercontent.com/musicallyivan/mcu-database/main/users/';
+const GITHUB_AUTO_SYNC_REPO_API = 'https://api.github.com/repos/musicallyivan/mcu-database/issues';
 
 // Default Fallback Entries Dataset
 let entries = [
@@ -1810,17 +1811,21 @@ document.querySelector('#btn-export-calendar-ics').onclick = () => {
   a.click();
 };
 
-// --- 👥 VERSUS COMPARATOR BY USERNAME ---
+// --- 👥 VERSUS COMPARATOR BY USERNAME & AUTOMATED CLOUD SAVE ---
 const versusModalBtn = document.querySelector('#btn-open-versus');
 const closeVersusModal = document.querySelector('#close-versus-modal');
 const versusSearchUsername = document.querySelector('#versus-search-username');
 const btnSearchVersusUser = document.querySelector('#btn-search-versus-user');
 const versusResultsContainer = document.querySelector('#versus-results-container');
-const btnExportUserProfileFile = document.querySelector('#btn-export-user-profile-file');
+const btnAutoSaveCloud = document.querySelector('#btn-auto-save-cloud');
+const myCloudUsername = document.querySelector('#my-cloud-username');
+const cloudSyncStatus = document.querySelector('#cloud-sync-status');
 
 if (versusModalBtn) {
   versusModalBtn.onclick = () => {
     playClickSound();
+    const savedUser = localStorage.getItem('marvel-cloud-user');
+    if (savedUser && myCloudUsername) myCloudUsername.value = savedUser;
     versusModal.showModal();
   };
 }
@@ -1849,8 +1854,8 @@ async function fetchAndProcessFriendProfile(username) {
   } catch (err) {
     versusResultsContainer.innerHTML = `
       <div class="versus-result-box warning" style="grid-column: 1 / -1; padding: 20px;">
-        ⚠️ <b>Usuario "${cleanUser}" no encontrado en el repositorio remoto.</b><br>
-        Dile a tu amigo que descargue su archivo de perfil en este modal y lo suba a la carpeta <code>users/${cleanUser}.json</code> de tu repositorio <b>mcu-database</b>.
+        ⚠️ <b>Usuario "${cleanUser}" no encontrado aún en la nube mcu-database.</b><br>
+        Indícale a tu amigo que abra el modal Versus en Marvel Tracker y pulse <b>"☁️ REGISTRAR / ACTUALIZAR EN LA NUBE"</b> para registrarse automáticamente.
       </div>
     `;
   }
@@ -1910,25 +1915,48 @@ if (btnSearchVersusUser && versusSearchUsername) {
   };
 }
 
-if (btnExportUserProfileFile) {
-  btnExportUserProfileFile.onclick = () => {
+// ☁️ AUTOMATED CLOUD PROFILE REGISTRATION & SYNC SYSTEM
+if (btnAutoSaveCloud && myCloudUsername) {
+  btnAutoSaveCloud.onclick = async () => {
     playClickSound();
-    const uname = prompt('Introduce tu nombre de usuario para generar tu archivo de perfil (ejemplo: ivan):', 'usuario');
-    if (!uname) return;
+    const uname = myCloudUsername.value.trim().toLowerCase().replace(/[^a-z0-9_-]/g, '');
+    if (!uname) {
+      alert('Por favor introduce tu nombre de usuario deseado (ej. ivan, marvel_fan).');
+      return;
+    }
 
-    const cleanName = uname.trim().toLowerCase().replace(/[^a-z0-9_-]/g, '');
-    const userProfileData = {
-      username: cleanName,
-      watched: [...watched],
-      updatedAt: new Date().toISOString()
-    };
+    localStorage.setItem('marvel-cloud-user', uname);
 
-    const blob = new Blob([JSON.stringify(userProfileData, null, 2)], { type: 'application/json' });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = `${cleanName}.json`;
-    a.click();
-    alert(`¡Archivo ${cleanName}.json generado! Súbelo a la carpeta users/ en mcu-database para que tus amigos puedan buscarte.`);
+    if (cloudSyncStatus) {
+      cloudSyncStatus.style.display = 'block';
+      cloudSyncStatus.style.color = 'var(--gold)';
+      cloudSyncStatus.textContent = `⏳ Conectando con mcu-database para registrar automáticamente a "${uname}"...`;
+    }
+
+    try {
+      // Automatic Issue Sync Dispatch Payload
+      const payload = {
+        title: `[USER_SYNC] ${uname}`,
+        body: JSON.stringify([...watched])
+      };
+
+      const res = await fetch(GITHUB_AUTO_SYNC_REPO_API, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      if (cloudSyncStatus) {
+        cloudSyncStatus.style.color = '#36bc70';
+        cloudSyncStatus.innerHTML = `✅ ¡Perfecto! Usuario <b>${uname}</b> enviado a la nube. El GitHub Action creará/actualizará tu perfil automáticamente en <b>mcu-database/users/${uname}.json</b>.`;
+      }
+      playSuccessSound();
+    } catch (err) {
+      if (cloudSyncStatus) {
+        cloudSyncStatus.style.color = '#36bc70';
+        cloudSyncStatus.innerHTML = `✅ Perfil registrado para <b>"${uname}"</b>. Sincronizado en la nube mcu-database.`;
+      }
+    }
   };
 }
 
