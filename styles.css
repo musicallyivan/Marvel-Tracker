@@ -148,6 +148,30 @@ nav a:hover {
   box-shadow: 0 0 15px var(--red-glow);
 }
 
+/* User Profile Chip Styling */
+.user-chip-btn {
+  background: rgba(245, 197, 24, 0.1);
+  border-color: rgba(245, 197, 24, 0.3);
+  color: var(--gold);
+}
+
+.user-chip-btn:hover {
+  background: rgba(245, 197, 24, 0.2);
+  border-color: var(--gold);
+  box-shadow: 0 0 12px rgba(245, 197, 24, 0.3);
+}
+
+.user-chip-btn.has-user {
+  background: rgba(237, 29, 36, 0.15);
+  border-color: var(--red);
+  color: #ffffff;
+  font-weight: 800;
+}
+
+.user-chip-btn.has-user #topbar-username-text {
+  color: var(--gold);
+}
+
 /* GitHub Card / Button Styling */
 .github-btn {
   background: rgba(255, 255, 255, 0.08);

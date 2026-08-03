@@ -1,10 +1,13 @@
 const poster = (path) => path.startsWith('http') ? path : `https://image.tmdb.org/t/p/w500${path.startsWith('/') ? path : '/' + path}`;
 const defaultTrailer = '399Ez7WHK5s';
 
-// MCU Database URL Endpoints
+// MCU Database URL Endpoints & Token Config
 const MCU_DATABASE_API_URL = 'https://raw.githubusercontent.com/musicallyivan/mcu-database/main/mcu-dataset.json';
 const MCU_USER_PROFILES_BASE_URL = 'https://raw.githubusercontent.com/musicallyivan/mcu-database/main/users/';
 const GITHUB_AUTO_SYNC_REPO_API = 'https://api.github.com/repos/musicallyivan/mcu-database/issues';
+
+// 🔑 Token de GitHub por defecto para todos los usuarios (almacenado de forma segura en localStorage del navegador)
+const DEFAULT_GITHUB_TOKEN = '';
 
 // Default Fallback Entries Dataset
 let entries = [
@@ -1608,9 +1611,12 @@ function generateFanCardCanvas() {
   const watchedCount = watched.size;
   const pct = Math.round((watchedCount / totalItems) * 100);
 
+  const savedUser = localStorage.getItem('marvel-cloud-user');
+  const fanCardSubtitle = savedUser ? `FICHA OFICIAL DE FAN DEL MCU · @${savedUser.toUpperCase()}` : 'FICHA OFICIAL DE FAN DEL MCU';
+
   ctx.fillStyle = '#f5c518';
   ctx.font = '700 13px Outfit, sans-serif';
-  ctx.fillText('FICHA OFICIAL DE FAN DEL MCU', paddingX, 105);
+  ctx.fillText(fanCardSubtitle, paddingX, 105);
 
   ctx.fillStyle = '#ffffff';
   ctx.font = '400 48px "Bebas Neue", sans-serif';
@@ -1811,7 +1817,9 @@ document.querySelector('#btn-export-calendar-ics').onclick = () => {
   a.click();
 };
 
-// --- 👥 VERSUS COMPARATOR BY USERNAME & AUTOMATED CLOUD SAVE ---
+// --- 👤 USER PROFILE & VERSUS COMPARATOR BY USERNAME ---
+const btnUserProfile = document.querySelector('#btn-user-profile');
+const topbarUsernameText = document.querySelector('#topbar-username-text');
 const versusModalBtn = document.querySelector('#btn-open-versus');
 const closeVersusModal = document.querySelector('#close-versus-modal');
 const versusSearchUsername = document.querySelector('#versus-search-username');
@@ -1819,19 +1827,57 @@ const btnSearchVersusUser = document.querySelector('#btn-search-versus-user');
 const versusResultsContainer = document.querySelector('#versus-results-container');
 const btnAutoSaveCloud = document.querySelector('#btn-auto-save-cloud');
 const myCloudUsername = document.querySelector('#my-cloud-username');
+const githubPatInput = document.querySelector('#github-pat-token');
 const cloudSyncStatus = document.querySelector('#cloud-sync-status');
+
+function updateUserHeaderDisplay() {
+  const savedUser = localStorage.getItem('marvel-cloud-user');
+  if (topbarUsernameText) {
+    if (savedUser) {
+      topbarUsernameText.textContent = `@${savedUser}`;
+      if (btnUserProfile) btnUserProfile.classList.add('has-user');
+    } else {
+      topbarUsernameText.textContent = 'Registrar Usuario';
+      if (btnUserProfile) btnUserProfile.classList.remove('has-user');
+    }
+  }
+}
+
+// Populate modal inputs on open
+function syncModalInputValues() {
+  const savedUser = localStorage.getItem('marvel-cloud-user');
+  const savedToken = localStorage.getItem('marvel-github-token');
+  if (savedUser && myCloudUsername) myCloudUsername.value = savedUser;
+  if (savedToken && githubPatInput) githubPatInput.value = savedToken;
+}
+
+// Initial call on page load
+updateUserHeaderDisplay();
+
+if (btnUserProfile) {
+  btnUserProfile.onclick = () => {
+    playClickSound();
+    syncModalInputValues();
+    versusModal.showModal();
+  };
+}
 
 if (versusModalBtn) {
   versusModalBtn.onclick = () => {
     playClickSound();
-    const savedUser = localStorage.getItem('marvel-cloud-user');
-    if (savedUser && myCloudUsername) myCloudUsername.value = savedUser;
+    syncModalInputValues();
     versusModal.showModal();
   };
 }
 
 if (closeVersusModal) {
   closeVersusModal.onclick = () => versusModal.close();
+}
+
+function getActiveGitHubToken() {
+  const userToken = localStorage.getItem('marvel-github-token');
+  const inputToken = githubPatInput ? githubPatInput.value.trim() : '';
+  return inputToken || userToken || DEFAULT_GITHUB_TOKEN;
 }
 
 async function fetchAndProcessFriendProfile(username) {
@@ -1841,24 +1887,41 @@ async function fetchAndProcessFriendProfile(username) {
     return;
   }
 
-  versusResultsContainer.innerHTML = `<p style="text-align:center; color: var(--gold);">🔍 Buscando usuario <b>"${cleanUser}"</b> en mcu-database...</p>`;
+  versusResultsContainer.innerHTML = `<p style="text-align:center; color: var(--gold);">🔍 Buscando usuario <b>"${cleanUser}"</b> en la nube mcu-database...</p>`;
+
+  const token = getActiveGitHubToken();
 
   try {
-    const res = await fetch(`${MCU_USER_PROFILES_BASE_URL}${cleanUser}.json`);
-    if (!res.ok) {
-      throw new Error(`El usuario "${cleanUser}" aún no se ha registrado en el repositorio mcu-database.`);
+    let res;
+    if (token) {
+      // Private GitHub repository raw content fetch via REST API
+      res = await fetch(`https://api.github.com/repos/musicallyivan/mcu-database/contents/users/${cleanUser}.json`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Accept': 'application/vnd.github.v3.raw'
+        }
+      });
+    } else {
+      // Public raw URL fallback
+      res = await fetch(`${MCU_USER_PROFILES_BASE_URL}${cleanUser}.json`);
     }
-    const friendData = await res.json();
-    processVersusData(friendData, cleanUser);
-    playSuccessSound();
+
+    if (res.ok) {
+      const friendData = await res.json();
+      processVersusData(friendData, cleanUser);
+      playSuccessSound();
+      return;
+    }
   } catch (err) {
-    versusResultsContainer.innerHTML = `
-      <div class="versus-result-box warning" style="grid-column: 1 / -1; padding: 20px;">
-        ⚠️ <b>Usuario "${cleanUser}" no encontrado aún en la nube mcu-database.</b><br>
-        Indícale a tu amigo que abra el modal Versus en Marvel Tracker y pulse <b>"☁️ REGISTRAR / ACTUALIZAR EN LA NUBE"</b> para registrarse automáticamente.
-      </div>
-    `;
+    // Network or auth error
   }
+
+  versusResultsContainer.innerHTML = `
+    <div class="versus-result-box warning" style="grid-column: 1 / -1; padding: 20px;">
+      ⚠️ <b>Usuario "${cleanUser}" no encontrado en la nube mcu-database.</b><br>
+      Asegúrate de que tu amigo haya guardado su perfil en la nube o de tener acceso al repositorio.
+    </div>
+  `;
 }
 
 function processVersusData(friendData, friendName = 'Amigo') {
@@ -1877,9 +1940,12 @@ function processVersusData(friendData, friendName = 'Amigo') {
   const myOnly = entries.filter(e => myWatched.has(e.chronoIndex) && !friendWatched.has(e.chronoIndex));
   const friendOnly = entries.filter(e => !myWatched.has(e.chronoIndex) && friendWatched.has(e.chronoIndex));
 
+  const savedUser = localStorage.getItem('marvel-cloud-user');
+  const myLabel = savedUser ? `TÚ (@${savedUser.toUpperCase()})` : 'TÚ';
+
   versusResultsContainer.innerHTML = `
     <div class="versus-card glass-panel">
-      <h4>Tú</h4>
+      <h4>${myLabel}</h4>
       <div class="versus-score">${myPct}%</div>
       <p>${myWatched.size} de ${total} vistos</p>
     </div>
@@ -1915,7 +1981,7 @@ if (btnSearchVersusUser && versusSearchUsername) {
   };
 }
 
-// ☁️ AUTOMATED CLOUD PROFILE REGISTRATION & SYNC SYSTEM
+// ☁️ AUTOMATED CLOUD PROFILE REGISTRATION & SYNC SYSTEM WITH PAT TOKEN SUPPORT FOR GITHUB PAGES
 if (btnAutoSaveCloud && myCloudUsername) {
   btnAutoSaveCloud.onclick = async () => {
     playClickSound();
@@ -1925,37 +1991,63 @@ if (btnAutoSaveCloud && myCloudUsername) {
       return;
     }
 
+    const token = getActiveGitHubToken();
+
     localStorage.setItem('marvel-cloud-user', uname);
+    updateUserHeaderDisplay();
 
     if (cloudSyncStatus) {
       cloudSyncStatus.style.display = 'block';
       cloudSyncStatus.style.color = 'var(--gold)';
-      cloudSyncStatus.textContent = `⏳ Conectando con mcu-database para registrar automáticamente a "${uname}"...`;
+      cloudSyncStatus.textContent = `⏳ Conectando con el repositorio privado mcu-database en GitHub...`;
     }
 
-    try {
-      // Automatic Issue Sync Dispatch Payload
-      const payload = {
-        title: `[USER_SYNC] ${uname}`,
-        body: JSON.stringify([...watched])
-      };
+    const payload = {
+      title: `[USER_SYNC] ${uname}`,
+      body: JSON.stringify([...watched])
+    };
 
-      const res = await fetch(GITHUB_AUTO_SYNC_REPO_API, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
+    if (token) {
+      try {
+        const res = await fetch(GITHUB_AUTO_SYNC_REPO_API, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify(payload)
+        });
 
+        if (res.ok || res.status === 201) {
+          if (cloudSyncStatus) {
+            cloudSyncStatus.style.color = '#36bc70';
+            cloudSyncStatus.innerHTML = `✅ ¡Enviado a la nube! Perfil de <b>"${uname}"</b> enviado a tu repositorio privado <b>mcu-database</b>. El GitHub Action creará/actualizará <b>users/${uname}.json</b> automáticamente.`;
+          }
+          playSuccessSound();
+          return;
+        } else {
+          const errData = await res.json().catch(() => ({}));
+          throw new Error(errData.message || `HTTP ${res.status}`);
+        }
+      } catch (err) {
+        if (cloudSyncStatus) {
+          cloudSyncStatus.style.color = '#ff5252';
+          cloudSyncStatus.innerHTML = `⚠️ Error al conectar con GitHub (${err.message}). Verifica la validez de tu Token de GitHub.`;
+        }
+      }
+    } else {
+      // Without token, fallback to 1-click Issue URL creation
+      const issueUrl = `https://github.com/musicallyivan/mcu-database/issues/new?title=${encodeURIComponent('[USER_SYNC] ' + uname)}&body=${encodeURIComponent(JSON.stringify([...watched]))}`;
       if (cloudSyncStatus) {
         cloudSyncStatus.style.color = '#36bc70';
-        cloudSyncStatus.innerHTML = `✅ ¡Perfecto! Usuario <b>${uname}</b> enviado a la nube. El GitHub Action creará/actualizará tu perfil automáticamente en <b>mcu-database/users/${uname}.json</b>.`;
+        cloudSyncStatus.innerHTML = `
+          <span style="color: var(--muted); font-size: 11px;">Para guardar en la nube sin token público, pulsa el botón:</span><br>
+          <a href="${issueUrl}" target="_blank" rel="noopener" class="primary-btn" style="display: inline-block; margin-top: 6px; padding: 6px 14px; font-size: 12px; text-decoration: none;">
+            🚀 Publicar perfil en GitHub (mcu-database) ↗
+          </a>
+        `;
       }
       playSuccessSound();
-    } catch (err) {
-      if (cloudSyncStatus) {
-        cloudSyncStatus.style.color = '#36bc70';
-        cloudSyncStatus.innerHTML = `✅ Perfil registrado para <b>"${uname}"</b>. Sincronizado en la nube mcu-database.`;
-      }
     }
   };
 }
