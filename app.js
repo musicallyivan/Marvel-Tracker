@@ -1,9 +1,14 @@
 const poster = (path) => path.startsWith('http') ? path : `https://image.tmdb.org/t/p/w500${path.startsWith('/') ? path : '/' + path}`;
 const defaultTrailer = '399Ez7WHK5s';
 
-// MCU Database with Sagas, Streaming Provider and Categorization Tags
-const entries = [
+// MCU Database URL Endpoint
+const MCU_DATABASE_API_URL = 'https://raw.githubusercontent.com/musicallyivan/mcu-database/main/mcu-dataset.json';
+const MCU_USER_PROFILES_BASE_URL = 'https://raw.githubusercontent.com/musicallyivan/mcu-database/main/users/';
+
+// Default Fallback Entries Dataset
+let entries = [
   {
+    chronoIndex: 1,
     title: 'Capitán América: El primer vengador',
     kind: 'Película',
     type: 'movie',
@@ -19,6 +24,7 @@ const entries = [
     synopsis: 'Tras ser rechazado por el ejército, Steve Rogers se somete a un experimento con el suero del supersoldado que lo transforma en el Primer Vengador.'
   },
   {
+    chronoIndex: 2,
     title: 'Agent Carter · T1–T2',
     kind: 'Serie',
     type: 'series',
@@ -34,6 +40,7 @@ const entries = [
     synopsis: 'Peggy Carter equilibra su trabajo en la Reserva Científica Estratégica con misiones encubiertas para limpiar el nombre de Howard Stark.'
   },
   {
+    chronoIndex: 3,
     title: 'Capitana Marvel',
     kind: 'Película',
     type: 'movie',
@@ -49,6 +56,7 @@ const entries = [
     synopsis: 'Carol Danvers se convierte en una de las heroínas más poderosas del universo mientras la Tierra se ve inmersa en un conflicto intergaláctico.'
   },
   {
+    chronoIndex: 4,
     title: 'Iron Man',
     kind: 'Película',
     type: 'movie',
@@ -64,6 +72,7 @@ const entries = [
     synopsis: 'El magnate industrial y genio Tony Stark construye una armadura blindada tras ser capturado por terroristas, dando origen a Iron Man.'
   },
   {
+    chronoIndex: 5,
     title: 'Iron Man 2',
     kind: 'Película',
     type: 'movie',
@@ -79,6 +88,7 @@ const entries = [
     synopsis: 'Con el mundo consciente de su identidad, Tony Stark enfrenta presiones políticas y a un vengativo científico ruso.'
   },
   {
+    chronoIndex: 6,
     title: 'El increíble Hulk',
     kind: 'Película',
     type: 'movie',
@@ -94,6 +104,7 @@ const entries = [
     synopsis: 'Bruce Banner busca desesperadamente un antídoto contra la radiación gamma que desata a la criatura dentro de él.'
   },
   {
+    chronoIndex: 7,
     title: 'Thor',
     kind: 'Película',
     type: 'movie',
@@ -109,6 +120,7 @@ const entries = [
     synopsis: 'El impulsivo Dios del Trueno es despojado de sus poderes y desterrado a la Tierra por su padre Odín.'
   },
   {
+    chronoIndex: 8,
     title: 'Los Vengadores',
     kind: 'Película',
     type: 'movie',
@@ -124,6 +136,7 @@ const entries = [
     synopsis: 'Nick Fury reúne a Iron Man, Capitán América, Thor, Hulk, Viuda Negra y Ojo de Halcón para combatir a Loki.'
   },
   {
+    chronoIndex: 9,
     title: 'Iron Man 3',
     kind: 'Película',
     type: 'movie',
@@ -139,6 +152,7 @@ const entries = [
     synopsis: 'Afectado por los eventos de Nueva York, Tony Stark se enfrenta a un temible enemigo conocido como El Mandarín.'
   },
   {
+    chronoIndex: 10,
     title: 'Thor: El mundo oscuro',
     kind: 'Película',
     type: 'movie',
@@ -154,6 +168,7 @@ const entries = [
     synopsis: 'Thor lucha por proteger los Nueve Reinos frente a Malekith y los Elfos Oscuros que buscan apoderarse del Éter.'
   },
   {
+    chronoIndex: 11,
     title: 'Agents of S.H.I.E.L.D. · T1',
     kind: 'Serie',
     type: 'series',
@@ -169,6 +184,7 @@ const entries = [
     synopsis: 'El agente Phil Coulson encabeza un equipo especial de analistas y agentes para investigar amenazas sobrehumanas.'
   },
   {
+    chronoIndex: 12,
     title: 'Capitán América: El soldado de invierno',
     kind: 'Película',
     type: 'movie',
@@ -184,6 +200,7 @@ const entries = [
     synopsis: 'Steve Rogers y Natasha Romanoff destapan una conspiración dentro de S.H.I.E.L.D. y se cruzan con el Soldado de Invierno.'
   },
   {
+    chronoIndex: 13,
     title: 'Guardianes de la Galaxia',
     kind: 'Película',
     type: 'movie',
@@ -199,6 +216,7 @@ const entries = [
     synopsis: 'Un extravagante grupo de renegados espaciales se alía para evitar que un poderoso orbe caiga en manos de Ronan.'
   },
   {
+    chronoIndex: 14,
     title: 'Guardianes de la Galaxia Vol. 2',
     kind: 'Película',
     type: 'movie',
@@ -214,6 +232,7 @@ const entries = [
     synopsis: 'Los Guardianes recorren el cosmos mientras ayudan a Peter Quill a descubrir los secretos del origen de su verdadero padre.'
   },
   {
+    chronoIndex: 15,
     title: 'Yo soy Groot · T1',
     kind: 'Serie',
     type: 'series',
@@ -229,6 +248,7 @@ const entries = [
     synopsis: 'Aventuras cortas y divertidas de Baby Groot explorando el universo y causando caos entre las estrellas.'
   },
   {
+    chronoIndex: 16,
     title: 'Daredevil · T1',
     kind: 'Serie',
     type: 'series',
@@ -244,6 +264,7 @@ const entries = [
     synopsis: 'El abogado ciego Matt Murdock utiliza sus sentidos aumentados para luchar contra el crimen en Hell\'s Kitchen como Daredevil.'
   },
   {
+    chronoIndex: 17,
     title: 'Vengadores: La era de Ultrón',
     kind: 'Película',
     type: 'movie',
@@ -259,6 +280,7 @@ const entries = [
     synopsis: 'Los Vengadores deben reunirse para detener a Ultrón, una inteligencia artificial obsesionada con la extinción humana.'
   },
   {
+    chronoIndex: 18,
     title: 'Ant-Man',
     kind: 'Película',
     type: 'movie',
@@ -274,6 +296,7 @@ const entries = [
     synopsis: 'Dotado con un traje que le permite reducir su tamaño y multiplicar su fuerza, Scott Lang debe llevar a cabo un audaz atraco.'
   },
   {
+    chronoIndex: 19,
     title: 'Jessica Jones · T1',
     kind: 'Serie',
     type: 'series',
@@ -289,6 +312,7 @@ const entries = [
     synopsis: 'Jessica Jones intenta reconstruir su vida personal como detective privado tras el trauma causado por Kilgrave.'
   },
   {
+    chronoIndex: 20,
     title: 'Capitán América: Civil War',
     kind: 'Película',
     type: 'movie',
@@ -304,6 +328,7 @@ const entries = [
     synopsis: 'La supervisión gubernamental de los Vengadores provoca una brecha ideológica irreconciliable entre el Capitán América y Iron Man.'
   },
   {
+    chronoIndex: 21,
     title: 'Viuda Negra',
     kind: 'Película',
     type: 'movie',
@@ -319,6 +344,7 @@ const entries = [
     synopsis: 'Natasha Romanoff lidia con las conspiraciones ligadas a su pasado en la Habitación Roja inmediatamente después de Civil War.'
   },
   {
+    chronoIndex: 22,
     title: 'Black Panther',
     kind: 'Película',
     type: 'movie',
@@ -334,6 +360,7 @@ const entries = [
     synopsis: 'T\'Challa regresa a Wakanda para reclamar su lugar como rey, pero descubre que su soberanía es desafiada por Killmonger.'
   },
   {
+    chronoIndex: 23,
     title: 'Spider-Man: Homecoming',
     kind: 'Película',
     type: 'movie',
@@ -349,6 +376,7 @@ const entries = [
     synopsis: 'Peter Parker regresa a su rutina bajo la tutela de Tony Stark mientras se enfrenta a la amenaza del Buitre.'
   },
   {
+    chronoIndex: 24,
     title: 'Doctor Strange',
     kind: 'Película',
     type: 'movie',
@@ -364,6 +392,7 @@ const entries = [
     synopsis: 'Un accidente acaba con la carrera del neurocirujano Stephen Strange, quien descubre el místico mundo de Kamar-Taj.'
   },
   {
+    chronoIndex: 25,
     title: 'Thor: Ragnarok',
     kind: 'Película',
     type: 'movie',
@@ -379,6 +408,7 @@ const entries = [
     synopsis: 'Atrapado en el planeta Sakaar sin su martillo, Thor debe competir en la arena para frenar la profecía del Ragnarok.'
   },
   {
+    chronoIndex: 26,
     title: 'Ant-Man y la Avispa',
     kind: 'Película',
     type: 'movie',
@@ -394,6 +424,7 @@ const entries = [
     synopsis: 'Scott Lang intenta equilibrar su vida familiar y sus responsabilidades cuando Hank Pym y Hope le encomiendan una nueva misión.'
   },
   {
+    chronoIndex: 27,
     title: 'Vengadores: Infinity War',
     kind: 'Película',
     type: 'movie',
@@ -409,6 +440,7 @@ const entries = [
     synopsis: 'Thanos inicia la recolección de las seis Gemas del Infinito para borrar a la mitad de la vida en el universo.'
   },
   {
+    chronoIndex: 28,
     title: 'Vengadores: Endgame',
     kind: 'Película',
     type: 'movie',
@@ -424,6 +456,7 @@ const entries = [
     synopsis: 'Cinco años después del chasquido, los héroes restantes organizan un atraco temporal a través del espacio y el tiempo.'
   },
   {
+    chronoIndex: 29,
     title: 'Loki · T1',
     kind: 'Serie',
     type: 'series',
@@ -439,6 +472,7 @@ const entries = [
     synopsis: 'Loki es capturado por la Autoridad de Variación Temporal tras alterar la Sagrada Línea Temporal en 2012.'
   },
   {
+    chronoIndex: 30,
     title: 'What If...? · T1',
     kind: 'Serie',
     type: 'series',
@@ -454,6 +488,7 @@ const entries = [
     synopsis: 'El Vigilante observa realidades alternativas donde decisiones clave cambiaron por completo el destino del MCU.'
   },
   {
+    chronoIndex: 31,
     title: 'WandaVision',
     kind: 'Serie',
     type: 'series',
@@ -469,6 +504,7 @@ const entries = [
     synopsis: 'Wanda Maximoff atrapa a un pueblo entero en una ilusión de sitcoms clásicas para revivir a Visión.'
   },
   {
+    chronoIndex: 32,
     title: 'Falcon y el Soldado de Invierno',
     kind: 'Serie',
     type: 'series',
@@ -484,6 +520,7 @@ const entries = [
     synopsis: 'Sam Wilson se resiste a empuñar el escudo del Capitán América mientras colabora con Bucky contra los Sin Banderas.'
   },
   {
+    chronoIndex: 33,
     title: 'Shang-Chi y la leyenda de los Diez Anillos',
     kind: 'Película',
     type: 'movie',
@@ -499,6 +536,7 @@ const entries = [
     synopsis: 'Shang-Chi se enfrenta al imperio místico de su padre Wenwu y a la orden milenaria de los Diez Anillos.'
   },
   {
+    chronoIndex: 34,
     title: 'Eternals',
     kind: 'Película',
     type: 'movie',
@@ -514,6 +552,7 @@ const entries = [
     synopsis: 'Diez seres inmortales enviados a la Tierra por los Celestiales despiertan tras milenios para detener a los Desviantes.'
   },
   {
+    chronoIndex: 35,
     title: 'Spider-Man: Lejos de casa',
     kind: 'Película',
     type: 'movie',
@@ -529,6 +568,7 @@ const entries = [
     synopsis: 'Durante su viaje por Europa, Peter Parker es reclutado por Nick Fury para luchar junto a Mysterio contra los Elementales.'
   },
   {
+    chronoIndex: 36,
     title: 'Spider-Man: No Way Home',
     kind: 'Película',
     type: 'movie',
@@ -544,6 +584,7 @@ const entries = [
     synopsis: 'Un hechizo fallido del Doctor Strange rompe las fronteras multiversales, trayendo a villanos y héroes de otras realidades.'
   },
   {
+    chronoIndex: 37,
     title: 'Ojo de Halcón',
     kind: 'Serie',
     type: 'series',
@@ -559,6 +600,7 @@ const entries = [
     synopsis: 'El ex Vengador Clint Barton tiene una misión aparentemente simple: regresar con su familia para Navidad, pero se cruza con Kate Bishop.'
   },
   {
+    chronoIndex: 38,
     title: 'Moon Knight',
     kind: 'Serie',
     type: 'series',
@@ -574,6 +616,7 @@ const entries = [
     synopsis: 'Steven Grant descubre que padece trastorno de identidad disociativo y comparte cuerpo con el avatar del dios egipcio Khonshu.'
   },
   {
+    chronoIndex: 39,
     title: 'Doctor Strange en el multiverso de la locura',
     kind: 'Película',
     type: 'movie',
@@ -589,6 +632,7 @@ const entries = [
     synopsis: 'Strange protege a América Chávez a través del Multiverso ante la implacable persecución de la Bruja Escarlata.'
   },
   {
+    chronoIndex: 40,
     title: 'Ms. Marvel',
     kind: 'Serie',
     type: 'series',
@@ -604,6 +648,7 @@ const entries = [
     synopsis: 'Kamala Khan desbloquea misteriosos brazaletes familiares que le otorgan la capacidad de canalizar la luz cósmica.'
   },
   {
+    chronoIndex: 41,
     title: 'Thor: Love and Thunder',
     kind: 'Película',
     type: 'movie',
@@ -619,6 +664,7 @@ const entries = [
     synopsis: 'Thor busca tranquilidad, pero termina uniendo fuerzas con Jane Foster (Mighty Thor) para detener a Gorr el Carnicero de Dioses.'
   },
   {
+    chronoIndex: 42,
     title: 'She-Hulk: Abogada Hulka',
     kind: 'Serie',
     type: 'series',
@@ -634,6 +680,7 @@ const entries = [
     synopsis: 'Jennifer Walters lidia con su trabajo legal de alto perfil y su nueva condición sobrehumana como She-Hulk.'
   },
   {
+    chronoIndex: 43,
     title: 'Black Panther: Wakanda Forever',
     kind: 'Película',
     type: 'movie',
@@ -649,6 +696,7 @@ const entries = [
     synopsis: 'Wakanda llora la muerte del rey T\'Challa mientras la reina Ramonda y Shuri defienden su nación del reino submarino de Namor.'
   },
   {
+    chronoIndex: 44,
     title: 'Ant-Man y la Avispa: Quantumanía',
     kind: 'Película',
     type: 'movie',
@@ -664,6 +712,7 @@ const entries = [
     synopsis: 'La familia Pym y Lang son succionados al Reino Cuántico, donde descubren un vasto imperio liderado por Kang el Conquistador.'
   },
   {
+    chronoIndex: 45,
     title: 'Guardianes de la Galaxia Vol. 3',
     kind: 'Película',
     type: 'movie',
@@ -679,6 +728,7 @@ const entries = [
     synopsis: 'Los Guardianes emprenden una arriesgada misión espacial para rescatar a Rocket de las garras del Alto Evolucionador.'
   },
   {
+    chronoIndex: 46,
     title: 'Invasión secreta',
     kind: 'Serie',
     type: 'series',
@@ -694,6 +744,7 @@ const entries = [
     synopsis: 'Nick Fury descubre una red de infiltrados Skrulls en las sombras de los gobiernos del mundo.'
   },
   {
+    chronoIndex: 47,
     title: 'The Marvels',
     kind: 'Película',
     type: 'movie',
@@ -709,6 +760,7 @@ const entries = [
     synopsis: 'Carol Danvers, Monica Rambeau y Kamala Khan entrelazan sus poderes cósmicos cada vez que usan sus habilidades.'
   },
   {
+    chronoIndex: 48,
     title: 'Loki · T2',
     kind: 'Serie',
     type: 'series',
@@ -724,6 +776,7 @@ const entries = [
     synopsis: 'Loki intenta estabilizar el Telar del Tiempo junto a Mobius para salvar la existencia de las infinitas ramas multiversales.'
   },
   {
+    chronoIndex: 49,
     title: 'Echo',
     kind: 'Serie',
     type: 'series',
@@ -739,6 +792,7 @@ const entries = [
     synopsis: 'Maya Lopez huye del imperio criminal de Kingpin y regresa a Oklahoma para reencontrarse con su legado familiar.'
   },
   {
+    chronoIndex: 50,
     title: 'Deadpool y Lobezno',
     kind: 'Película',
     type: 'movie',
@@ -754,6 +808,7 @@ const entries = [
     synopsis: 'Wade Wilson recluta a una variante melancólica de Wolverine para librar una batalla desternillante que salvará su universo.'
   },
   {
+    chronoIndex: 51,
     title: 'Agatha, ¿quién si no?',
     kind: 'Serie',
     type: 'series',
@@ -769,6 +824,7 @@ const entries = [
     synopsis: 'Agatha Harkness recluta a un aquelarre de brujas para recorrer el legendario y mortal Sendero de las Brujas.'
   },
   {
+    chronoIndex: 52,
     title: 'Capitán América: Brave New World',
     kind: 'Película',
     type: 'movie',
@@ -784,6 +840,7 @@ const entries = [
     synopsis: 'Sam Wilson se enfrenta al nuevo presidente Thaddeus Ross mientras investiga una amenaza global sin precedentes.'
   },
   {
+    chronoIndex: 53,
     title: 'Daredevil: Born Again · T1',
     kind: 'Serie',
     type: 'series',
@@ -799,6 +856,7 @@ const entries = [
     synopsis: 'El choque épico entre el abogado Matt Murdock y el alcalde de Nueva York Wilson Fisk.'
   },
   {
+    chronoIndex: 54,
     title: 'Thunderbolts*',
     kind: 'Película',
     type: 'movie',
@@ -814,6 +872,7 @@ const entries = [
     synopsis: 'Yelena Belova, Bucky Barnes y un grupo de super-soldados caídos en desgracia son enviados a una trampa mortal.'
   },
   {
+    chronoIndex: 55,
     title: 'Los Cuatro Fantásticos: Primeros pasos',
     kind: 'Película',
     type: 'movie',
@@ -829,6 +888,7 @@ const entries = [
     synopsis: 'Reed Richards, Sue Storm, Johnny Storm y Ben Grimm se enfrentan a Galactus en un mundo retrofuturista de los años 60.'
   },
   {
+    chronoIndex: 56,
     title: 'Spider-Man: Brand New Day',
     kind: 'Película',
     type: 'movie',
@@ -844,6 +904,7 @@ const entries = [
     synopsis: 'Peter Parker inicia una nueva etapa sin recuerdos de su pasado por parte de sus seres queridos.'
   },
   {
+    chronoIndex: 57,
     title: 'Vengadores: Doomsday',
     kind: 'Película',
     type: 'movie',
@@ -859,6 +920,7 @@ const entries = [
     synopsis: 'Robert Downey Jr. interpreta a Victor von Doom en la gran colisión multiversal que cambiará el destino del MCU.'
   },
   {
+    chronoIndex: 58,
     title: 'Vengadores: Secret Wars',
     kind: 'Película',
     type: 'movie',
@@ -873,22 +935,42 @@ const entries = [
     durationMinutes: 175,
     synopsis: 'La colisión total de los universos Marvel en Battleworld para el desenlace definitivo de la Saga del Multiverso.'
   }
-].map((item, index) => ({
+].map((item) => ({
   ...item,
-  chronoIndex: index + 1,
   posterUrl: poster(item.poster),
   trailerId: item.trailer || defaultTrailer
 }));
 
 // LocalStorage State
 const watched = new Set(JSON.parse(localStorage.getItem('marvel-watched') || '[]'));
-let currentSort = 'chrono'; // 'chrono', 'release', 'rating'
+let currentSort = 'chrono';
 let filter = 'all';
 let activeRoute = 'all';
 let query = '';
 let activeCountdownTarget = null;
 let currentModalItem = null;
 let soundEnabled = localStorage.getItem('marvel-sound') !== 'false';
+
+// --- DYNAMIC DATABASE FETCH FROM GITHUB REPO ---
+async function fetchMCUDataFromGitHub() {
+  try {
+    const res = await fetch(MCU_DATABASE_API_URL);
+    if (!res.ok) throw new Error('Repo mcu-database aún no disponible.');
+    const remoteData = await res.json();
+    if (Array.isArray(remoteData) && remoteData.length > 0) {
+      entries = remoteData.map(item => ({
+        ...item,
+        posterUrl: poster(item.poster),
+        trailerId: item.trailer || defaultTrailer
+      }));
+      console.log('✅ Base de datos cargada desde mcu-database repo.');
+      render();
+      initCountdownSystem();
+    }
+  } catch (e) {
+    console.log('ℹ️ Usando dataset integrado local.');
+  }
+}
 
 // --- WEB AUDIO API SYNTHESIZER ---
 let audioCtx = null;
@@ -915,12 +997,11 @@ function playSuccessSound() {
     osc1.type = 'triangle';
     osc2.type = 'sine';
 
-    // Heroic brass chord (C5 -> E5 -> G5)
-    osc1.frequency.setValueAtTime(523.25, now); // C5
-    osc1.frequency.setValueAtTime(659.25, now + 0.1); // E5
-    osc1.frequency.setValueAtTime(783.99, now + 0.2); // G5
+    osc1.frequency.setValueAtTime(523.25, now);
+    osc1.frequency.setValueAtTime(659.25, now + 0.1);
+    osc1.frequency.setValueAtTime(783.99, now + 0.2);
 
-    osc2.frequency.setValueAtTime(261.63, now); // C4 bass
+    osc2.frequency.setValueAtTime(261.63, now);
 
     gain.gain.setValueAtTime(0.15, now);
     gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
@@ -981,7 +1062,7 @@ if (soundBtn) {
   updateSoundUI();
 }
 
-// --- 🎬 CINEMA MODE OVERLAY ---
+// Cinema Mode
 const cinemaBtn = document.querySelector('#btn-toggle-cinema');
 const cinemaOverlay = document.querySelector('#cinema-overlay');
 
@@ -997,7 +1078,7 @@ if (cinemaBtn && cinemaOverlay) {
   };
 }
 
-// GitHub Button sound
+// GitHub Button Sound
 const githubBtn = document.querySelector('#btn-github-repo');
 if (githubBtn) {
   githubBtn.onclick = () => {
@@ -1042,7 +1123,6 @@ function render() {
   const visible = sorted.filter(x => {
     const r = getItemRating(x.chronoIndex);
 
-    // Active guided route filter
     const matchesRoute = (
       activeRoute === 'all' ||
       (activeRoute === 'doomsday' && x.tags.includes('doomsday')) ||
@@ -1089,7 +1169,6 @@ function render() {
     node.querySelector('.card-meta').textContent = `${item.kind.toUpperCase()} · ${item.year}`;
     node.querySelector('h3').textContent = item.title;
 
-    // Render User Stars
     const userRating = getItemRating(item.chronoIndex);
     const starsContainer = node.querySelector('.card-user-stars');
     if (userRating > 0) {
@@ -1243,7 +1322,7 @@ function updateDashboard() {
   document.querySelector('#fav-count').textContent = favCount;
 }
 
-// 🎬 RUTAS GUIADAS ESPECIALES
+// Rutas Guiadas
 document.querySelectorAll('.route-btn').forEach(btn => {
   btn.onclick = () => {
     playClickSound();
@@ -1254,7 +1333,7 @@ document.querySelectorAll('.route-btn').forEach(btn => {
   };
 });
 
-// 🏆 ACHIEVEMENTS SYSTEM
+// Achievements System
 const achievementsDef = [
   {
     id: 'fase1',
@@ -1346,7 +1425,7 @@ function renderAchievements() {
   }).join('');
 }
 
-// 🍿 MARATHON CALCULATOR
+// Marathon Calculator
 function updateMarathonCalculator() {
   const paceSelect = document.querySelector('#marathon-pace-select');
   const targetSelect = document.querySelector('#marathon-target-select');
@@ -1401,7 +1480,7 @@ function updateMarathonCalculator() {
 document.querySelector('#marathon-pace-select').onchange = updateMarathonCalculator;
 document.querySelector('#marathon-target-select').onchange = updateMarathonCalculator;
 
-// 🔀 RECOMMENDATIONS & RULETA
+// Recommendations & Roulette
 document.querySelector('#btn-next-recommended').onclick = () => {
   playClickSound();
   const unwatched = entries.filter(e => !watched.has(e.chronoIndex));
@@ -1699,7 +1778,7 @@ document.querySelector('#btn-copy-fan-card-text').onclick = () => {
   }
 };
 
-// --- 📅 CALENDAR EVENT EXPORT (.ics) ---
+// Calendar Export
 document.querySelector('#btn-export-calendar-ics').onclick = () => {
   playClickSound();
   const upcoming = getUpcomingReleases();
@@ -1731,13 +1810,13 @@ document.querySelector('#btn-export-calendar-ics').onclick = () => {
   a.click();
 };
 
-// --- 👥 VERSUS COMPARATOR ENGINE ---
+// --- 👥 VERSUS COMPARATOR BY USERNAME ---
 const versusModalBtn = document.querySelector('#btn-open-versus');
 const closeVersusModal = document.querySelector('#close-versus-modal');
-const versusFriendJson = document.querySelector('#versus-friend-json');
+const versusSearchUsername = document.querySelector('#versus-search-username');
+const btnSearchVersusUser = document.querySelector('#btn-search-versus-user');
 const versusResultsContainer = document.querySelector('#versus-results-container');
-const btnLoadVersusFile = document.querySelector('#btn-load-versus-file');
-const versusFileInput = document.querySelector('#versus-file-input');
+const btnExportUserProfileFile = document.querySelector('#btn-export-user-profile-file');
 
 if (versusModalBtn) {
   versusModalBtn.onclick = () => {
@@ -1750,9 +1829,36 @@ if (closeVersusModal) {
   closeVersusModal.onclick = () => versusModal.close();
 }
 
-function processVersusData(friendData) {
+async function fetchAndProcessFriendProfile(username) {
+  const cleanUser = username.trim().toLowerCase().replace(/[^a-z0-9_-]/g, '');
+  if (!cleanUser) {
+    alert('Introduce un nombre de usuario válido.');
+    return;
+  }
+
+  versusResultsContainer.innerHTML = `<p style="text-align:center; color: var(--gold);">🔍 Buscando usuario <b>"${cleanUser}"</b> en mcu-database...</p>`;
+
+  try {
+    const res = await fetch(`${MCU_USER_PROFILES_BASE_URL}${cleanUser}.json`);
+    if (!res.ok) {
+      throw new Error(`El usuario "${cleanUser}" aún no se ha registrado en el repositorio mcu-database.`);
+    }
+    const friendData = await res.json();
+    processVersusData(friendData, cleanUser);
+    playSuccessSound();
+  } catch (err) {
+    versusResultsContainer.innerHTML = `
+      <div class="versus-result-box warning" style="grid-column: 1 / -1; padding: 20px;">
+        ⚠️ <b>Usuario "${cleanUser}" no encontrado en el repositorio remoto.</b><br>
+        Dile a tu amigo que descargue su archivo de perfil en este modal y lo suba a la carpeta <code>users/${cleanUser}.json</code> de tu repositorio <b>mcu-database</b>.
+      </div>
+    `;
+  }
+}
+
+function processVersusData(friendData, friendName = 'Amigo') {
   if (!friendData || !Array.isArray(friendData.watched)) {
-    versusResultsContainer.innerHTML = '<p class="error-text">❌ Datos de copia de seguridad no válidos.</p>';
+    versusResultsContainer.innerHTML = '<p class="error-text">❌ Datos de usuario no válidos.</p>';
     return;
   }
 
@@ -1774,52 +1880,59 @@ function processVersusData(friendData) {
     </div>
 
     <div class="versus-card glass-panel">
-      <h4>Tu Amigo</h4>
+      <h4>${friendName.toUpperCase()}</h4>
       <div class="versus-score text-gold">${friendPct}%</div>
       <p>${friendWatched.size} de ${total} vistos</p>
     </div>
 
     <div class="versus-diff-box glass-panel">
-      <h5>🟢 Títulos que tú has visto y tu amigo NO (${myOnly.length}):</h5>
+      <h5>🟢 Títulos que tú has visto y ${friendName} NO (${myOnly.length}):</h5>
       <ul>${myOnly.length > 0 ? myOnly.map(e => `<li>✓ ${e.title}</li>`).join('') : '<li>Ninguno (estáis al mismo nivel)</li>'}</ul>
     </div>
 
     <div class="versus-diff-box glass-panel">
-      <h5>🔒 Títulos que tu amigo ha visto y tú NO (${friendOnly.length}):</h5>
+      <h5>🔒 Títulos que ${friendName} ha visto y tú NO (${friendOnly.length}):</h5>
       <ul>${friendOnly.length > 0 ? friendOnly.map(e => `<li>✓ ${e.title}</li>`).join('') : '<li>Ninguno</li>'}</ul>
     </div>
   `;
 }
 
-if (versusFriendJson) {
-  versusFriendJson.oninput = (e) => {
-    try {
-      const data = JSON.parse(e.target.value.trim());
-      processVersusData(data);
-    } catch (err) {}
+if (btnSearchVersusUser && versusSearchUsername) {
+  btnSearchVersusUser.onclick = () => {
+    playClickSound();
+    fetchAndProcessFriendProfile(versusSearchUsername.value);
+  };
+  versusSearchUsername.onkeypress = (e) => {
+    if (e.key === 'Enter') {
+      playClickSound();
+      fetchAndProcessFriendProfile(versusSearchUsername.value);
+    }
   };
 }
 
-if (btnLoadVersusFile && versusFileInput) {
-  btnLoadVersusFile.onclick = () => versusFileInput.click();
-  versusFileInput.onchange = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      try {
-        const data = JSON.parse(event.target.result);
-        versusFriendJson.value = event.target.result;
-        processVersusData(data);
-      } catch (err) {
-        alert('Archivo de backup no válido.');
-      }
+if (btnExportUserProfileFile) {
+  btnExportUserProfileFile.onclick = () => {
+    playClickSound();
+    const uname = prompt('Introduce tu nombre de usuario para generar tu archivo de perfil (ejemplo: ivan):', 'usuario');
+    if (!uname) return;
+
+    const cleanName = uname.trim().toLowerCase().replace(/[^a-z0-9_-]/g, '');
+    const userProfileData = {
+      username: cleanName,
+      watched: [...watched],
+      updatedAt: new Date().toISOString()
     };
-    reader.readAsText(file);
+
+    const blob = new Blob([JSON.stringify(userProfileData, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `${cleanName}.json`;
+    a.click();
+    alert(`¡Archivo ${cleanName}.json generado! Súbelo a la carpeta users/ en mcu-database para que tus amigos puedan buscarte.`);
   };
 }
 
-// 💾 EXPORT & IMPORT JSON
+// Export & Import JSON
 document.querySelector('#btn-export-json').onclick = () => {
   playClickSound();
   const exportData = {
@@ -1963,7 +2076,7 @@ document.querySelector('#featured-trailer-btn').onclick = () => {
   openTrailer(doomsday);
 };
 
-// --- DYNAMIC COUNTDOWN SYSTEM ---
+// Dynamic Countdown System
 function getUpcomingReleases() {
   const now = new Date();
   return entries
@@ -2041,6 +2154,7 @@ function tickCountdown() {
 }
 
 // Boot
+fetchMCUDataFromGitHub();
 initCountdownSystem();
 tickCountdown();
 setInterval(tickCountdown, 1000);
