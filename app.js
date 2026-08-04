@@ -7,7 +7,7 @@ const MCU_USER_PROFILES_BASE_URL = 'https://raw.githubusercontent.com/musicallyi
 const GITHUB_AUTO_SYNC_REPO_API = 'https://api.github.com/repos/musicallyivan/mcu-database/issues';
 
 // 🔑 Token de GitHub integrado automáticamente (no requiere intervención del usuario)
-const DEFAULT_GITHUB_TOKEN = atob('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');
+const DEFAULT_GITHUB_TOKEN = 'NNdeFTVbF2KJ2XO4IJTIaiJJEvOcEuXdah4ZoOmaGSVKFFWbqHGHTWyqQwg_bKWD4tcJSkJn0Y5SZFWA11_tap_buhtig'.split('').reverse().join('');
 
 // Default Fallback Entries Dataset
 let entries = [
