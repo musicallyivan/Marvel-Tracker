@@ -90,25 +90,6 @@
         </div>
       </section>
 
-      <section class="custom-entry-panel glass-panel" aria-label="Añadir película desde herramienta externa">
-        <div class="section-title-wrap">
-          <p class="eyebrow">GESTIÓN DE CONTENIDO</p>
-          <h3>AÑADIR PELÍCULAS DESDE HERRAMIENTA EXTERNA</h3>
-        </div>
-
-        <div class="custom-entry-form">
-          <div class="custom-entry-grid">
-            <div class="info-box">
-              <p>La creación de películas ya no se hace desde la web.</p>
-              <p>Se añade desde un programa externo que actualiza el dataset y después se integra con el flujo del repositorio.</p>
-            </div>
-            <div class="info-box code-box">
-              <code>node tools/add-movie.js --title "Mi película" --poster "https://..." --trailer "https://youtu.be/..." --year "2026" --synopsis "..." --personalLink "https://..."</code>
-            </div>
-          </div>
-        </div>
-      </section>
-
       <!-- Tracker Timeline Section -->
       <section id="cronologia" class="tracker-section">
         <!-- Prominent Large Modern Progress Section -->
@@ -365,6 +346,27 @@
       </div>
     </dialog>
 
+    <!-- Microsoft Store Promo Modal -->
+    <dialog id="store-modal" class="modal modal-sm">
+      <button id="close-store-modal" class="close" aria-label="Cerrar promoción">×</button>
+      <div class="store-modal-content">
+        <div class="store-badge">MICROSOFT STORE</div>
+        <h3>Marvel Tracker ya está disponible</h3>
+        <p>Descubre la experiencia completa de seguimiento del MCU directamente desde Microsoft Store.</p>
+        <div class="store-cta-box">
+          <span>🎯</span>
+          <div>
+            <strong>App oficial</strong>
+            <small>Acceso rápido y experiencia optimizada</small>
+          </div>
+        </div>
+        <div class="store-actions">
+          <a id="btn-open-microsoft-store" class="primary-btn" href="https://apps.microsoft.com/search?query=Marvel%20Tracker" target="_blank" rel="noopener noreferrer">ABRIR MICROSOFT STORE</a>
+          <button id="btn-close-store-modal" class="secondary-btn" type="button">MÁS TARDE</button>
+        </div>
+      </div>
+    </dialog>
+
     <!-- VERSUS COMPARATOR BY USERNAME MODAL -->
     <dialog id="versus-modal" class="modal modal-lg">
       <button id="close-versus-modal" class="close">×</button>
@@ -374,27 +376,6 @@
           <h3>COMPARA TU PROGRESO POR USUARIO DE LA NUBE</h3>
           <p class="sub-note">Introduce el nombre de usuario de tu amigo para comparar directamente los progresos guardados en el repositorio <b>mcu-database</b>.</p>
         </div>
-
-        <!-- Microsoft Store Promo Modal -->
-        <dialog id="store-modal" class="modal modal-sm">
-          <button id="close-store-modal" class="close" aria-label="Cerrar promoción">×</button>
-          <div class="store-modal-content">
-            <div class="store-badge">MICROSOFT STORE</div>
-            <h3>Marvel Tracker ya está disponible</h3>
-            <p>Descubre la experiencia completa de seguimiento del MCU directamente desde Microsoft Store.</p>
-            <div class="store-cta-box">
-              <span>🎯</span>
-              <div>
-                <strong>App oficial</strong>
-                <small>Acceso rápido y experiencia optimizada</small>
-              </div>
-            </div>
-            <div class="store-actions">
-              <a id="btn-open-microsoft-store" class="primary-btn" href="https://apps.microsoft.com/search?query=Marvel%20Tracker" target="_blank" rel="noopener noreferrer">ABRIR MICROSOFT STORE</a>
-              <button id="btn-close-store-modal" class="secondary-btn" type="button">MÁS TARDE</button>
-            </div>
-          </div>
-        </dialog>
 
         <!-- User Cloud Registration & Save Bar -->
         <div class="versus-user-export-bar glass-panel" style="padding: 18px; margin-bottom: 10px; display: flex; flex-direction: column; gap: 10px;">
