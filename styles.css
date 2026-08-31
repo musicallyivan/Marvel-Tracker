@@ -1,13 +1,21 @@
 :root {
   --red: #ed1d24;
-  --red-glow: rgba(237, 29, 36, 0.4);
+  --red-glow: rgba(237, 29, 36, 0.45);
+  --red-strong: #ff2d39;
   --ink: #070709;
-  --panel: rgba(18, 18, 23, 0.85);
-  --border: rgba(255, 255, 255, 0.1);
-  --muted: #9b9b9e;
+  --ink-2: #0e0f17;
+  --panel: rgba(17, 18, 24, 0.62);
+  --panel-strong: rgba(21, 23, 31, 0.8);
+  --panel-soft: rgba(255, 255, 255, 0.05);
+  --border: rgba(255, 255, 255, 0.14);
+  --muted: #a9acb6;
   --gold: #f5c518;
-  --gold-glow: rgba(245, 197, 24, 0.4);
+  --gold-glow: rgba(245, 197, 24, 0.45);
+  --gold-soft: rgba(245, 197, 24, 0.14);
   --green: #36bc70;
+  --shadow-soft: 0 24px 60px rgba(0, 0, 0, 0.42);
+  --glass-highlight: rgba(255, 255, 255, 0.16);
+  --glass-edge: rgba(255, 255, 255, 0.1);
 }
 
 * {
@@ -21,11 +29,26 @@ html {
 
 body {
   margin: 0;
-  background: var(--ink);
+  background:
+    radial-gradient(circle at 15% 10%, rgba(237, 29, 36, 0.28), transparent 16%),
+    radial-gradient(circle at 82% 6%, rgba(245, 197, 24, 0.18), transparent 18%),
+    radial-gradient(circle at 60% 100%, rgba(255, 96, 104, 0.09), transparent 22%),
+    linear-gradient(140deg, #020408 0%, #0a0c14 30%, #111827 100%);
   color: #fff;
   font-family: 'Outfit', 'DM Sans', system-ui, -apple-system, sans-serif;
   overflow-x: hidden;
   line-height: 1.5;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(120deg, rgba(255,255,255,0.08), rgba(255,255,255,0) 30%),
+    radial-gradient(circle at center, rgba(255,255,255,0.12), transparent 55%);
+  z-index: -2;
 }
 
 /* Cinema Overlay Backdrop */
@@ -47,12 +70,12 @@ body {
 
 /* Glass panel utility */
 .glass-panel {
-  background: rgba(18, 18, 24, 0.75);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+  background: linear-gradient(180deg, rgba(31, 35, 46, 0.8), rgba(8, 10, 16, 0.86));
+  backdrop-filter: blur(26px) saturate(1.5);
+  -webkit-backdrop-filter: blur(26px) saturate(1.5);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 22px;
+  box-shadow: var(--shadow-soft), inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 0 18px rgba(237, 29, 36, 0.08), 0 0 25px rgba(245, 197, 24, 0.05);
 }
 
 /* Header & Topbar */
@@ -65,9 +88,11 @@ body {
   position: sticky;
   top: 0;
   z-index: 100;
-  background: rgba(7, 7, 10, 0.92);
-  backdrop-filter: blur(16px);
-  border-bottom: 1px solid var(--border);
+  background: rgba(8, 10, 14, 0.7);
+  backdrop-filter: blur(20px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.22), 0 0 0 1px rgba(255,255,255,0.02);
 }
 
 .brand {
@@ -123,10 +148,10 @@ nav a:hover {
 
 .topbar-icon-btn {
   background: rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--border);
+  border: 1px solid rgba(255,255,255,0.12);
   color: #fff;
   padding: 6px 12px;
-  border-radius: 8px;
+  border-radius: 10px;
   font-size: 12px;
   font-weight: 700;
   cursor: pointer;
@@ -135,6 +160,7 @@ nav a:hover {
   align-items: center;
   gap: 6px;
   text-decoration: none;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
 }
 
 .topbar-icon-btn:hover {
@@ -198,8 +224,9 @@ nav a:hover {
   gap: 14px;
   padding: 6px 14px;
   background: rgba(255, 255, 255, 0.04);
-  border: 1px solid var(--border);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 12px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
 }
 
 .countdown-header-info {
@@ -274,9 +301,10 @@ nav a:hover {
   grid-template-columns: 1fr 420px;
   align-items: center;
   gap: 40px;
-  background: 
-    radial-gradient(circle at 80% 30%, rgba(237, 29, 36, 0.22), transparent 45%),
-    linear-gradient(135deg, #07070a 30%, #12121a);
+  background:
+    linear-gradient(135deg, rgba(10, 11, 17, 0.8), rgba(17, 20, 28, 0.76)),
+    radial-gradient(circle at 80% 30%, rgba(237, 29, 36, 0.22), transparent 45%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .hero-copy {
@@ -330,17 +358,20 @@ nav a:hover {
   font-size: 12px;
   letter-spacing: 1.2px;
   padding: 14px 22px;
-  border-radius: 8px;
+  border-radius: 12px;
   cursor: pointer;
   transition: all 0.25s ease;
-  border: 0;
+  border: 1px solid rgba(255,255,255,0.14);
   min-height: 44px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
 }
 
 .primary-btn {
-  background: var(--red);
+  background: linear-gradient(135deg, rgba(237, 29, 36, 0.96), rgba(180, 0, 12, 0.88));
   color: #fff;
-  box-shadow: 0 8px 25px var(--red-glow);
+  box-shadow: 0 14px 32px rgba(237, 29, 36, 0.48), inset 0 1px 0 rgba(255,255,255,0.18), 0 0 18px rgba(237,29,36,0.25);
 }
 
 .primary-btn:hover {
@@ -350,14 +381,17 @@ nav a:hover {
 }
 
 .secondary-btn {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.05);
   color: #fff;
-  border: 1px solid var(--border);
+  border: 1px solid rgba(255,255,255,0.14);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 0 14px rgba(255,255,255,0.02);
 }
 
 .secondary-btn:hover {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.1);
   border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-1px);
+  box-shadow: 0 0 18px rgba(245, 197, 24, 0.08), inset 0 1px 0 rgba(255,255,255,0.12);
 }
 
 .glow-gold {
@@ -382,6 +416,9 @@ nav a:hover {
   display: flex;
   flex-direction: column;
   gap: 14px;
+  background: linear-gradient(180deg, rgba(27, 30, 39, 0.84), rgba(10, 12, 18, 0.9));
+  border: 1px solid rgba(255,255,255,0.14);
+  box-shadow: 0 22px 40px rgba(0,0,0,0.25), 0 0 20px rgba(237,29,36,0.08);
 }
 
 .countdown-card-header {
@@ -442,9 +479,10 @@ nav a:hover {
 .time-box {
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 10px;
+  border-radius: 12px;
   padding: 12px 6px;
   text-align: center;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 0 12px rgba(255,255,255,0.02);
 }
 
 .time-box span {
@@ -479,16 +517,17 @@ nav a:hover {
 }
 
 .custom-select {
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(10, 12, 18, 0.7);
   color: #fff;
-  border: 1px solid var(--border);
+  border: 1px solid rgba(255,255,255,0.12);
   padding: 10px 12px;
-  border-radius: 8px;
+  border-radius: 10px;
   font-family: inherit;
   font-size: 13px;
   outline: none;
   cursor: pointer;
   min-height: 42px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
 }
 
 .custom-select:focus {
@@ -496,15 +535,63 @@ nav a:hover {
 }
 
 /* Tracker Section */
+.custom-entry-panel {
+  padding: 28px;
+  margin: 0 clamp(16px, 5vw, 70px) 30px;
+}
+
+.custom-entry-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.custom-entry-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.custom-entry-grid label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: #dfe3eb;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.custom-entry-grid input {
+  background: rgba(8, 10, 16, 0.72);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: #fff;
+  border-radius: 10px;
+  min-height: 42px;
+  padding: 10px 12px;
+  font: inherit;
+}
+
+.custom-entry-grid input:focus {
+  outline: none;
+  border-color: rgba(237, 29, 36, 0.7);
+  box-shadow: 0 0 0 3px rgba(237, 29, 36, 0.12);
+}
+
+.custom-entry-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
 .tracker-section {
   padding: 60px clamp(16px, 5vw, 70px) 100px;
-  background: #09090d;
+  background: rgba(8, 10, 14, 0.35);
 }
 
 /* Progress Dashboard */
 .progress-dashboard {
   padding: 30px;
   margin-bottom: 30px;
+  background: linear-gradient(180deg, rgba(19, 22, 31, 0.78), rgba(11, 13, 19, 0.82));
 }
 
 .dashboard-header {
@@ -532,12 +619,13 @@ nav a:hover {
 }
 
 .stat-pill {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   padding: 8px 14px;
   border-radius: 30px;
   font-size: 12px;
   color: #d0d0d5;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
 }
 
 .stat-pill b {
@@ -619,6 +707,7 @@ nav a:hover {
 .guided-routes-section {
   padding: 24px 28px;
   margin-bottom: 30px;
+  background: linear-gradient(180deg, rgba(20, 22, 29, 0.72), rgba(12, 14, 20, 0.8));
 }
 
 .routes-buttons-wrap {
@@ -628,7 +717,7 @@ nav a:hover {
 }
 
 .route-btn {
-  border: 1px solid var(--border);
+  border: 1px solid rgba(255,255,255,0.12);
   background: rgba(255, 255, 255, 0.04);
   color: #b0b0b8;
   padding: 10px 18px;
@@ -639,6 +728,8 @@ nav a:hover {
   cursor: pointer;
   transition: all 0.25s ease;
   min-height: 42px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
 .route-btn:hover {
@@ -647,16 +738,17 @@ nav a:hover {
 }
 
 .route-btn.active {
-  background: var(--red);
+  background: linear-gradient(135deg, rgba(237,29,36,0.98), rgba(155, 6, 17, 0.9));
   color: #fff;
-  border-color: var(--red);
-  box-shadow: 0 4px 15px var(--red-glow);
+  border-color: rgba(255,255,255,0.2);
+  box-shadow: 0 6px 18px rgba(237, 29, 36, 0.38), inset 0 1px 0 rgba(255,255,255,0.1);
 }
 
 /* 🏆 Achievements Section */
 .achievements-section {
   padding: 28px;
   margin-bottom: 30px;
+  background: linear-gradient(180deg, rgba(19, 22, 31, 0.7), rgba(11, 13, 18, 0.8));
 }
 
 .section-title-wrap {
@@ -681,18 +773,20 @@ nav a:hover {
   gap: 14px;
   align-items: center;
   padding: 14px 18px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.09);
   border-radius: 12px;
   opacity: 0.6;
   transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .achievement-card.unlocked {
   opacity: 1;
-  background: rgba(245, 197, 24, 0.08);
+  background: linear-gradient(180deg, rgba(245, 197, 24, 0.12), rgba(255,255,255,0.04));
   border-color: rgba(245, 197, 24, 0.35);
-  box-shadow: 0 8px 20px rgba(245, 197, 24, 0.15);
+  box-shadow: 0 8px 20px rgba(245, 197, 24, 0.15), inset 0 1px 0 rgba(255,255,255,0.08);
 }
 
 .ach-icon {
@@ -750,6 +844,7 @@ nav a:hover {
 .marathon-calculator-card {
   padding: 28px;
   margin-bottom: 35px;
+  background: linear-gradient(180deg, rgba(20, 22, 29, 0.72), rgba(14, 16, 22, 0.82));
 }
 
 .marathon-header {
@@ -836,11 +931,12 @@ nav a:hover {
 .toggle-switch-group {
   display: flex;
   background: rgba(255, 255, 255, 0.04);
-  border: 1px solid var(--border);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   padding: 4px;
   border-radius: 10px;
   gap: 4px;
   flex-wrap: wrap;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
 }
 
 .sort-btn {
@@ -883,7 +979,7 @@ nav a:hover {
 }
 
 .filter {
-  border: 1px solid var(--border);
+  border: 1px solid rgba(255,255,255,0.12);
   background: rgba(255, 255, 255, 0.03);
   color: #a5a5aa;
   padding: 8px 16px;
@@ -894,6 +990,9 @@ nav a:hover {
   cursor: pointer;
   transition: all 0.2s ease;
   min-height: 36px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
 }
 
 .filter span {
@@ -908,9 +1007,10 @@ nav a:hover {
 }
 
 .filter.active {
-  background: #fff;
+  background: linear-gradient(135deg, rgba(255,255,255,0.98), rgba(245, 212, 123, 0.76));
   color: #07070a;
-  border-color: #fff;
+  border-color: rgba(255,255,255,0.8);
+  box-shadow: 0 10px 18px rgba(255,255,255,0.08), inset 0 1px 0 rgba(255,255,255,0.5), 0 0 18px rgba(245,197,24,0.12);
 }
 
 .phase-divider {
@@ -961,19 +1061,20 @@ nav a:hover {
 
 .title-card {
   position: relative;
-  background: rgba(18, 18, 24, 0.6);
-  border: 1px solid var(--border);
-  border-radius: 12px;
+  background: linear-gradient(180deg, rgba(31, 35, 45, 0.84), rgba(9, 12, 18, 0.92));
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 18px;
   padding: 8px;
   transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
   display: flex;
   flex-direction: column;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 18px 30px rgba(0,0,0,0.22), 0 0 0 1px rgba(255,255,255,0.02);
 }
 
 .title-card:hover {
   transform: translateY(-6px);
   border-color: rgba(255, 255, 255, 0.25);
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 18px 38px rgba(0, 0, 0, 0.42), 0 0 18px rgba(237, 29, 36, 0.07);
 }
 
 .card-badge-wrap {
@@ -1009,12 +1110,13 @@ nav a:hover {
   position: relative;
   width: 100%;
   aspect-ratio: 2 / 3;
-  border-radius: 8px;
+  border-radius: 10px;
   overflow: hidden;
   border: 0;
-  background: #15151a;
+  background: linear-gradient(180deg, rgba(28,30,38,0.9), rgba(11,13,20,1));
   cursor: pointer;
   padding: 0;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
 }
 
 .poster-button img {
@@ -1159,22 +1261,6 @@ nav a:hover {
   box-shadow: 0 0 12px rgba(54, 188, 112, 0.5);
 }
 
-.edit-link {
-  background: none;
-  border: 0;
-  color: #666;
-  cursor: pointer;
-  font-size: 16px;
-  padding: 4px;
-  transition: color 0.2s;
-  min-width: 28px;
-  min-height: 28px;
-}
-
-.edit-link:hover {
-  color: var(--red);
-}
-
 .highlight-pulse {
   animation: highlight-pulse-anim 1.5s infinite alternate;
   border-color: var(--gold) !important;
@@ -1215,10 +1301,13 @@ nav a:hover {
 
 /* Footer Section */
 .app-footer {
-  background: #050508;
-  border-top: 1px solid var(--border);
+  background: linear-gradient(180deg, rgba(8, 9, 12, 0.84), rgba(4, 5, 8, 0.9));
+  border-top: 1px solid rgba(255,255,255,0.08);
   padding: 50px clamp(16px, 5vw, 70px) 30px;
   color: var(--muted);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
 }
 
 .footer-container {
@@ -1280,12 +1369,14 @@ nav a:hover {
 .modal {
   width: min(850px, calc(100vw - 32px));
   padding: 0;
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  background: #0d0d12;
+  border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 20px;
+  background: linear-gradient(180deg, rgba(18, 20, 28, 0.9), rgba(9, 11, 16, 0.96));
   color: #fff;
-  box-shadow: 0 30px 100px rgba(0, 0, 0, 0.9);
+  box-shadow: 0 30px 100px rgba(0, 0, 0, 0.75), inset 0 1px 0 rgba(255,255,255,0.06);
   overflow: hidden;
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
 }
 
 .modal.modal-sm {
@@ -1317,6 +1408,80 @@ nav a:hover {
   cursor: pointer;
   display: grid;
   place-items: center;
+}
+
+.store-modal-content {
+  padding: 28px 24px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background: linear-gradient(180deg, rgba(15, 18, 28, 0.96), rgba(10, 12, 18, 0.98));
+}
+
+.store-badge {
+  display: inline-flex;
+  align-self: flex-start;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(0, 120, 212, 0.14);
+  border: 1px solid rgba(0, 120, 212, 0.35);
+  color: #63b3ff;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.store-modal-content h3 {
+  margin: 0;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(2.1rem, 3vw, 3rem);
+  line-height: 0.98;
+  letter-spacing: 0.03em;
+}
+
+.store-modal-content p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.store-cta-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.store-cta-box span {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(0, 120, 212, 0.22), rgba(0, 170, 130, 0.18));
+  font-size: 1.2rem;
+}
+
+.store-cta-box strong,
+.store-cta-box small {
+  display: block;
+}
+
+.store-cta-box small {
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+.store-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 4px;
 }
 
 /* Fan Card Modal Preview */
@@ -1491,13 +1656,15 @@ nav a:hover {
 }
 
 .user-review-box {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255,255,255,0.1);
   padding: 16px;
   border-radius: 12px;
   display: flex;
   flex-direction: column;
   gap: 14px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .rating-picker {
@@ -1575,13 +1742,6 @@ nav a:hover {
   padding: 12px 20px;
   border-radius: 8px;
   white-space: nowrap;
-}
-
-.link-note {
-  font-size: 11px;
-  color: #777;
-  padding: 0 24px 20px;
-  margin: 0;
 }
 
 /* Roulette Modal */

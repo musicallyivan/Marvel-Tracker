@@ -4,3 +4,7 @@ Thumbs.db
 node_modules/
 .vscode/
 .idea/
+movie-editor/
+Abrir-Editor-Peliculas.bat
+tools/
+tests/
