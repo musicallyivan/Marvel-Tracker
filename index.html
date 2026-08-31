@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
     <title>MARVEL · Tracker MCU | Universo Cinematográfico en Orden Cronológico</title>
     <meta name="description" content="El tracker definitivo para seguir todas las películas y series del Universo Cinematográfico de Marvel (MCU) en orden cronológico, calcular tu maratón y comparar con amigos." />
+    <meta name="theme-color" content="#0b0d12" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Marvel Tracker" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="icon" type="image/png" href="assets/icons/icon-192.png" />
+    <link rel="apple-touch-icon" href="assets/icons/icon-192.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -19,7 +26,10 @@
     <main>
       <!-- Topbar Header -->
       <header class="topbar">
-        <a class="brand" href="#inicio" aria-label="Marvel Tracker, inicio"><span>MARVEL</span><b>TRACKER</b></a>
+        <a class="brand" href="#inicio" aria-label="Marvel Tracker, inicio">
+          <img src="assets/icons/logo.png" alt="Marvel Tracker Logo" class="logo-img" />
+          <span>MARVEL</span><b>TRACKER</b>
+        </a>
         <nav>
           <a href="#cronologia">Cronología</a>
           <a href="#rutas">Rutas</a>
@@ -305,7 +315,7 @@
 
         <div class="modal-actions">
           <a id="watch-link" class="watch-btn" href="#" target="_blank" rel="noreferrer">VER TRÁILER EN YOUTUBE <span>↗</span></a>
-          <a id="personal-watch-link" class="secondary-btn" href="#" target="_blank" rel="noreferrer" style="display: none;">VER PELÍCULA <span>↗</span></a>
+          <a id="personal-watch-link" class="secondary-btn" href="#" style="display: none;">VER PELÍCULA <span>↗</span></a>
         </div>
       </div>
     </dialog>

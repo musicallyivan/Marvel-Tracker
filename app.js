@@ -1,6 +1,12 @@
 const poster = (path) => path.startsWith('http') ? path : `https://image.tmdb.org/t/p/w500${path.startsWith('/') ? path : '/' + path}`;
 const defaultTrailer = '399Ez7WHK5s';
 
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./service-worker.js').catch(() => undefined);
+  });
+}
+
 // MCU Database URL Endpoints & Token Config
 const MCU_DATABASE_API_URL = 'https://raw.githubusercontent.com/musicallyivan/mcu-database/main/mcu-dataset.json';
 const MCU_USER_PROFILES_BASE_URL = 'https://raw.githubusercontent.com/musicallyivan/mcu-database/main/users/';
@@ -978,6 +984,25 @@ function saveCustomEntries(data) {
   localStorage.setItem(CUSTOM_ENTRIES_KEY, JSON.stringify(data));
 }
 
+// Open MCU Player with movie data
+function openMCUPlayer(movie) {
+  const trailerId = movie.trailerId || extractVideoId(movie.trailer || '');
+  const trailerUrl = trailerId ? `https://www.youtube.com/embed/${trailerId}` : '';
+  
+  const params = new URLSearchParams({
+    title: movie.title || '',
+    poster: movie.posterUrl || movie.poster || '',
+    trailer: trailerUrl,
+    synopsis: movie.synopsis || '',
+    year: movie.year || '',
+    phase: movie.phase || '',
+    saga: movie.saga || ''
+  });
+  
+  const playerUrl = `https://musicallyivan.github.io/mcu-player/?${params.toString()}`;
+  window.open(playerUrl, '_blank');
+}
+
 function normalizeCustomEntry(item, chronoIndex) {
   const title = (item.title || '').trim();
   const posterValue = item.poster || '';
@@ -1290,18 +1315,18 @@ function openTrailer(item) {
 
   const link = document.querySelector('#watch-link');
   const personalLinkEl = document.querySelector('#personal-watch-link');
-  const personalLink = item.personalLink || '';
 
   link.href = `https://www.youtube.com/watch?v=${item.trailerId}`;
   link.textContent = 'VER TRÁILER EN YOUTUBE ↗';
 
-  if (personalLink) {
-    personalLinkEl.href = personalLink;
-    personalLinkEl.textContent = 'VER PELÍCULA ↗';
-    personalLinkEl.style.display = 'inline-flex';
-  } else {
-    personalLinkEl.style.display = 'none';
-  }
+  // Always show MCU Player button
+  personalLinkEl.textContent = 'VER PELÍCULA ↗';
+  personalLinkEl.style.display = 'inline-flex';
+  personalLinkEl.href = '#'; // Prevent default link behavior
+  personalLinkEl.onclick = (e) => {
+    e.preventDefault();
+    openMCUPlayer(item);
+  };
 
   const r = getItemRating(item.chronoIndex);
   updateModalStarsUI(r);
@@ -2262,7 +2287,6 @@ document.querySelector('#search').oninput = e => {
 document.querySelector('#close-modal').onclick = () => modal.close();
 modal.addEventListener('close', () => {
   document.querySelector('#trailer-frame').src = '';
-  document.querySelector('#personal-watch-link').style.display = 'none';
 });
 
 // Featured Section Trailer Button
