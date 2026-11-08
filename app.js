@@ -1921,6 +1921,7 @@ const versusSearchUsername = document.querySelector('#versus-search-username');
 const btnSearchVersusUser = document.querySelector('#btn-search-versus-user');
 const versusResultsContainer = document.querySelector('#versus-results-container');
 const btnAutoSaveCloud = document.querySelector('#btn-auto-save-cloud');
+const btnLoadCloudProfile = document.querySelector('#btn-load-cloud-profile');
 const myCloudUsername = document.querySelector('#my-cloud-username');
 const githubPatInput = document.querySelector('#github-pat-token');
 const cloudSyncStatus = document.querySelector('#cloud-sync-status');
@@ -2072,6 +2073,59 @@ if (btnSearchVersusUser && versusSearchUsername) {
     if (e.key === 'Enter') {
       playClickSound();
       fetchAndProcessFriendProfile(versusSearchUsername.value);
+    }
+  };
+}
+
+// Load the selected cloud profile into this browser without publishing changes.
+if (btnLoadCloudProfile && myCloudUsername) {
+  btnLoadCloudProfile.onclick = async () => {
+    playClickSound();
+    const uname = myCloudUsername.value.trim().toLowerCase().replace(/[^a-z0-9_-]/g, '');
+    if (!uname) {
+      alert('Introduce el nombre de usuario del perfil que quieres cargar.');
+      return;
+    }
+
+    if (cloudSyncStatus) {
+      cloudSyncStatus.style.display = 'block';
+      cloudSyncStatus.style.color = 'var(--gold)';
+      cloudSyncStatus.textContent = `⏳ Cargando el perfil de "${uname}"...`;
+    }
+
+    try {
+      const token = getActiveGitHubToken();
+      const url = token
+        ? `https://api.github.com/repos/musicallyivan/mcu-database/contents/users/${uname}.json`
+        : `${MCU_USER_PROFILES_BASE_URL}${uname}.json`;
+      const res = await fetch(url, token ? {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Accept': 'application/vnd.github.v3.raw'
+        }
+      } : undefined);
+
+      if (!res.ok) throw new Error(res.status === 404 ? 'No se encontró ese perfil en la nube.' : `GitHub respondió HTTP ${res.status}.`);
+      const profile = await res.json();
+      if (!profile || !Array.isArray(profile.watched)) throw new Error('El perfil no contiene una lista válida de títulos vistos.');
+
+      watched.clear();
+      profile.watched.forEach(id => watched.add(id));
+      localStorage.setItem('marvel-watched', JSON.stringify([...watched]));
+      localStorage.setItem('marvel-cloud-user', uname);
+      updateUserHeaderDisplay();
+      render();
+
+      if (cloudSyncStatus) {
+        cloudSyncStatus.style.color = '#36bc70';
+        cloudSyncStatus.textContent = `✅ Perfil de "${uname}" cargado. Tu progreso local se ha sustituido por el progreso de la nube.`;
+      }
+      playSuccessSound();
+    } catch (err) {
+      if (cloudSyncStatus) {
+        cloudSyncStatus.style.color = '#ff5252';
+        cloudSyncStatus.textContent = `⚠️ No se pudo cargar el perfil: ${err.message}`;
+      }
     }
   };
 }
