@@ -1,6 +1,12 @@
 const poster = (path) => path.startsWith('http') ? path : `https://image.tmdb.org/t/p/w500${path.startsWith('/') ? path : '/' + path}`;
 const defaultTrailer = '399Ez7WHK5s';
 
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./service-worker.js').catch(() => undefined);
+  });
+}
+
 // MCU Database URL Endpoints & Token Config
 const MCU_DATABASE_API_URL = 'https://raw.githubusercontent.com/musicallyivan/mcu-database/main/mcu-dataset.json';
 const MCU_USER_PROFILES_BASE_URL = 'https://raw.githubusercontent.com/musicallyivan/mcu-database/main/users/';
@@ -946,6 +952,7 @@ let entries = [
 }));
 
 // LocalStorage State
+const CUSTOM_ENTRIES_KEY = 'marvel-custom-entries';
 const watched = new Set(JSON.parse(localStorage.getItem('marvel-watched') || '[]'));
 let currentSort = 'chrono';
 let filter = 'all';
@@ -955,6 +962,79 @@ let activeCountdownTarget = null;
 let currentModalItem = null;
 let soundEnabled = localStorage.getItem('marvel-sound') !== 'false';
 
+function extractVideoId(value) {
+  if (!value) return defaultTrailer;
+  const trimmed = value.trim();
+  const match = trimmed.match(/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/);
+  if (match) return match[1];
+  if (/^[A-Za-z0-9_-]{11}$/.test(trimmed)) return trimmed;
+  return trimmed;
+}
+
+function getCustomEntries() {
+  try {
+    const raw = JSON.parse(localStorage.getItem(CUSTOM_ENTRIES_KEY) || '[]');
+    return Array.isArray(raw) ? raw : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveCustomEntries(data) {
+  localStorage.setItem(CUSTOM_ENTRIES_KEY, JSON.stringify(data));
+}
+
+// Open MCU Player with movie data
+function openMCUPlayer(movie) {
+  const trailerId = movie.trailerId || extractVideoId(movie.trailer || '');
+  const trailerUrl = trailerId ? `https://www.youtube.com/embed/${trailerId}` : '';
+  
+  const params = new URLSearchParams({
+    title: movie.title || '',
+    poster: movie.posterUrl || movie.poster || '',
+    trailer: trailerUrl,
+    synopsis: movie.synopsis || '',
+    year: movie.year || '',
+    phase: movie.phase || '',
+    saga: movie.saga || ''
+  });
+  
+  const playerUrl = `https://musicallyivan.github.io/mcu-player/?${params.toString()}`;
+  window.open(playerUrl, '_blank');
+}
+
+function normalizeCustomEntry(item, chronoIndex) {
+  const title = (item.title || '').trim();
+  const posterValue = item.poster || '';
+  const trailerId = extractVideoId(item.trailer || item.trailerId || defaultTrailer);
+  const personalLink = (item.personalLink || '').trim();
+
+  return {
+    chronoIndex,
+    title,
+    kind: 'Película',
+    type: 'movie',
+    year: item.year || new Date().getFullYear().toString(),
+    releaseDate: item.releaseDate || new Date().toISOString().slice(0, 10),
+    phase: 'Personalizada',
+    saga: 'multiverso',
+    provider: 'cines',
+    tags: ['personalizada'],
+    poster: posterValue,
+    posterUrl: posterValue ? poster(posterValue) : 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=500&q=80',
+    trailer: trailerId,
+    trailerId,
+    durationMinutes: Number(item.durationMinutes) || 120,
+    synopsis: item.synopsis || 'Película añadida desde el formulario personalizado.',
+    personalLink
+  };
+}
+
+function mergeCustomEntriesIntoEntries(list) {
+  const custom = getCustomEntries().map((item, index) => normalizeCustomEntry(item, Number(item.chronoIndex) || (Math.max(...list.map(e => Number(e.chronoIndex) || 0), 0) + index + 1)));
+  return [...list, ...custom];
+}
+
 // --- DYNAMIC DATABASE FETCH FROM GITHUB REPO ---
 async function fetchMCUDataFromGitHub() {
   try {
@@ -962,16 +1042,17 @@ async function fetchMCUDataFromGitHub() {
     if (!res.ok) throw new Error('Repo mcu-database aún no disponible.');
     const remoteData = await res.json();
     if (Array.isArray(remoteData) && remoteData.length > 0) {
-      entries = remoteData.map(item => ({
+      entries = mergeCustomEntriesIntoEntries(remoteData.map(item => ({
         ...item,
         posterUrl: poster(item.poster),
         trailerId: item.trailer || defaultTrailer
-      }));
+      })));
       console.log('✅ Base de datos cargada desde mcu-database repo.');
       render();
       initCountdownSystem();
     }
   } catch (e) {
+    entries = mergeCustomEntriesIntoEntries(entries);
     console.log('ℹ️ Usando dataset integrado local.');
   }
 }
@@ -1097,6 +1178,27 @@ const modal = document.querySelector('#trailer-modal');
 const rouletteModal = document.querySelector('#roulette-modal');
 const fanCardModal = document.querySelector('#fan-card-modal');
 const versusModal = document.querySelector('#versus-modal');
+const storeModal = document.querySelector('#store-modal');
+
+if (storeModal) {
+  const closeStoreModalBtn = document.querySelector('#close-store-modal');
+  const closeStoreSecondaryBtn = document.querySelector('#btn-close-store-modal');
+
+  const openStorePromo = () => {
+    if (typeof storeModal.showModal === 'function') {
+      storeModal.showModal();
+    }
+  };
+
+  if (closeStoreModalBtn) closeStoreModalBtn.onclick = () => storeModal.close();
+  if (closeStoreSecondaryBtn) closeStoreSecondaryBtn.onclick = () => storeModal.close();
+
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      openStorePromo();
+    }, 350);
+  });
+}
 
 // Formatters
 const formatDate = (isoStr) => {
@@ -1191,11 +1293,6 @@ function render() {
       toggleSeen(item);
     };
 
-    node.querySelector('.edit-link').onclick = (e) => {
-      e.stopPropagation();
-      saveLink(item);
-    };
-
     return node;
   }));
 
@@ -1217,9 +1314,19 @@ function openTrailer(item) {
   document.querySelector('#trailer-frame').src = `https://www.youtube.com/embed/${item.trailerId}?autoplay=1&rel=0&playsinline=1${origin}`;
 
   const link = document.querySelector('#watch-link');
-  const customLink = localStorage.getItem(`marvel-link-${item.chronoIndex}`);
-  link.href = customLink || `https://www.youtube.com/watch?v=${item.trailerId}`;
-  link.textContent = customLink ? 'VER MI ENLACE ↗' : 'VER TRÁILER EN YOUTUBE ↗';
+  const personalLinkEl = document.querySelector('#personal-watch-link');
+
+  link.href = `https://www.youtube.com/watch?v=${item.trailerId}`;
+  link.textContent = 'VER TRÁILER EN YOUTUBE ↗';
+
+  // Always show MCU Player button
+  personalLinkEl.textContent = 'VER PELÍCULA ↗';
+  personalLinkEl.style.display = 'inline-flex';
+  personalLinkEl.href = '#'; // Prevent default link behavior
+  personalLinkEl.onclick = (e) => {
+    e.preventDefault();
+    openMCUPlayer(item);
+  };
 
   const r = getItemRating(item.chronoIndex);
   updateModalStarsUI(r);
@@ -1268,18 +1375,6 @@ document.querySelector('#btn-save-note').onclick = () => {
   }
   render();
 };
-
-function saveLink(item) {
-  playClickSound();
-  const current = localStorage.getItem(`marvel-link-${item.chronoIndex}`) || '';
-  const url = prompt(`Introduce tu enlace personal de reproducción para "${item.title}":`, current);
-  if (url === null) return;
-  if (url.trim()) {
-    localStorage.setItem(`marvel-link-${item.chronoIndex}`, url.trim());
-  } else {
-    localStorage.removeItem(`marvel-link-${item.chronoIndex}`);
-  }
-}
 
 function toggleSeen(item) {
   if (watched.has(item.chronoIndex)) {
@@ -2166,6 +2261,10 @@ btnSortRating.onclick = () => {
   btnSortRelease.classList.remove('active');
   render();
 };
+
+// La creación de contenido pasa a manejarse desde un programa externo o mediante PR del repositorio.
+// El formulario web ya no se usa para añadir nuevas películas.
+
 
 // Filters
 document.querySelectorAll('.filter').forEach(btn => {

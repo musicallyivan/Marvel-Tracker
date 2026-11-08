@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
     <title>MARVEL · Tracker MCU | Universo Cinematográfico en Orden Cronológico</title>
     <meta name="description" content="El tracker definitivo para seguir todas las películas y series del Universo Cinematográfico de Marvel (MCU) en orden cronológico, calcular tu maratón y comparar con amigos." />
+    <meta name="theme-color" content="#0b0d12" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Marvel Tracker" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="icon" type="image/png" href="assets/icons/icon-192.png" />
+    <link rel="apple-touch-icon" href="assets/icons/icon-192.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -19,7 +26,10 @@
     <main>
       <!-- Topbar Header -->
       <header class="topbar">
-        <a class="brand" href="#inicio" aria-label="Marvel Tracker, inicio"><span>MARVEL</span><b>TRACKER</b></a>
+        <a class="brand" href="#inicio" aria-label="Marvel Tracker, inicio">
+          <img src="assets/icons/logo.png" alt="Marvel Tracker Logo" class="logo-img" />
+          <span>MARVEL</span><b>TRACKER</b>
+        </a>
         <nav>
           <a href="#cronologia">Cronología</a>
           <a href="#rutas">Rutas</a>
@@ -305,9 +315,9 @@
 
         <div class="modal-actions">
           <a id="watch-link" class="watch-btn" href="#" target="_blank" rel="noreferrer">VER TRÁILER EN YOUTUBE <span>↗</span></a>
+          <a id="personal-watch-link" class="secondary-btn" href="#" style="display: none;">VER PELÍCULA <span>↗</span></a>
         </div>
       </div>
-      <p class="link-note">Pulsa el icono <b>✎</b> en cualquier tarjeta para configurar tu enlace personal de reproducción.</p>
     </dialog>
 
     <!-- Random Picker Modal / Roulette Dialog -->
@@ -342,6 +352,27 @@
         <div class="fan-card-actions">
           <button id="btn-download-fan-card" class="primary-btn pulse-glow">💾 DESCARGAR IMAGEN (PNG)</button>
           <button id="btn-copy-fan-card-text" class="secondary-btn">📋 COPIAR TEXTO FICHA</button>
+        </div>
+      </div>
+    </dialog>
+
+    <!-- Microsoft Store Promo Modal -->
+    <dialog id="store-modal" class="modal modal-sm">
+      <button id="close-store-modal" class="close" aria-label="Cerrar promoción">×</button>
+      <div class="store-modal-content">
+        <div class="store-badge">MICROSOFT STORE</div>
+        <h3>Marvel Tracker ya está disponible</h3>
+        <p>Descubre la experiencia completa de seguimiento del MCU directamente desde Microsoft Store.</p>
+        <div class="store-cta-box">
+          <span>🎯</span>
+          <div>
+            <strong>App oficial</strong>
+            <small>Acceso rápido y experiencia optimizada</small>
+          </div>
+        </div>
+        <div class="store-actions">
+          <a id="btn-open-microsoft-store" class="primary-btn" href="https://apps.microsoft.com/search?query=Marvel%20Tracker" target="_blank" rel="noopener noreferrer">ABRIR MICROSOFT STORE</a>
+          <button id="btn-close-store-modal" class="secondary-btn" type="button">MÁS TARDE</button>
         </div>
       </div>
     </dialog>
@@ -409,7 +440,6 @@
           </div>
           <div class="card-actions">
             <button class="seen-toggle" title="Marcar como visto" aria-label="Marcar como visto">✓</button>
-            <button class="edit-link" title="Añadir enlace personal">✎</button>
           </div>
         </div>
       </article>
